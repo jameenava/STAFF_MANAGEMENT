@@ -7,8 +7,8 @@ namespace StaffManagement
 {
     class Program
     {
-        const string instituteName = " ABC SCHOOL";
-        static void display(Teaching teacher)
+        const string INSTITUTENAME = " ABC SCHOOL";
+        static void Display(Teaching teacher)
         {
             Console.WriteLine("____________________________________________________________________");
             Console.WriteLine("Teacher:" + "INSTITUTE:" + teacher.Institute + " |" + "ID:" + teacher.Sid + "| " + "SALARY:" + teacher.Salary + " |" + "SUBJECT:" + teacher.Subject);
@@ -79,13 +79,13 @@ namespace StaffManagement
                         {
                             subject = null;
                         }
-                        teacherList.Add(item: new Teaching() { Institute = instituteName, Sid = sid, Salary = salary, Subject = subject });
+                        teacherList.Add(item: new Teaching() { Institute = INSTITUTENAME, Sid = sid, Salary = salary, Subject = subject });
                         break;
 
                     case 2:
                         foreach (Teaching t in teacherList)
                         {
-                            display(t);
+                            Display(t);
                         };
                         break;
 
@@ -95,7 +95,7 @@ namespace StaffManagement
                         var item = teacherList.FirstOrDefault(o => o.Sid == iD);
                         if (item != null)
                         {
-                            display(item);
+                            Display(item);
                         }
                         else
                         {
