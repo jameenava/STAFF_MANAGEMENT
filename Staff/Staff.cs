@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Staff
+namespace StaffLibrary
 {
     public abstract class Staff
     {
@@ -13,15 +13,15 @@ namespace Staff
             set { instituteName = value; }
         }
 
-        private string sid;
-        public string Sid
+        private int sid;
+        public int Sid
         {
             get { return sid; }
             set { sid = value; }
         }
 
-        private float salary;
-        public float Salary
+        private Nullable<int> salary;
+        public Nullable<int> Salary
         {
             get { return salary; }
             set { salary = value; }

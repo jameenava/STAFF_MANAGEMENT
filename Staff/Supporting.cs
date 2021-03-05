@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Staff
+namespace StaffLibrary
 {
     public class Supporting : Staff
     {
