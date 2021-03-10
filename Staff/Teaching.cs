@@ -20,18 +20,17 @@ namespace StaffLibrary
             Console.Write("SUBJECT:/Area:" + this.Subject + "| ");
             Console.WriteLine(" ");
         }
-        public override void AddStaff(int sid, List<Staff> staffList)
+        public override void AddStaff(int sid)
         {
-            base.AddStaff(sid, staffList);
+            base.AddStaff(sid);
             Console.WriteLine("Enter subject");
-            string subject = Console.ReadLine();
-            if (String.IsNullOrWhiteSpace(subject))
+            this.Subject = Console.ReadLine();
+            if (String.IsNullOrWhiteSpace(this.Subject))
             {
-                subject = null;
+                this.Subject = null;
             }
-            string designation = "Teaching";
-            staffList.Add(item: new Teaching() { Institute = Institute, Designation = designation, Sid = sid, Salary = Salary, Subject = subject });
-
+            this.Designation = "Teaching";
+           
         }
     }
 }

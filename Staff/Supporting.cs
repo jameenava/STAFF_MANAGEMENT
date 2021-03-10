@@ -20,17 +20,16 @@ namespace StaffLibrary
             Console.Write("SUBJECT:/Area:" + this.SupportArea + "| ");
             Console.WriteLine(" ");
         }
-        public override void AddStaff(int sid, List<Staff> staffList)
+        public override void AddStaff(int sid)
         {
-            base.AddStaff(sid, staffList);
+            base.AddStaff(sid);
             Console.WriteLine("Enter supporting area");
-            string supportingArea = Console.ReadLine();
-            if (String.IsNullOrWhiteSpace(supportingArea))
+            this.SupportArea = Console.ReadLine();
+            if (String.IsNullOrWhiteSpace(this.SupportArea))
             {
-                supportingArea = null;
+                this.SupportArea = null;
             }
-            string designation = "Supporting";
-            staffList.Add(item: new Supporting() { Institute = Institute, Designation = designation, Sid = sid, Salary = Salary, SupportArea = supportingArea });
+            this.Designation = "Supporting";
 
         }
     }

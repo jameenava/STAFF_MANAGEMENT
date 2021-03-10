@@ -7,7 +7,7 @@ namespace StaffLibrary
     interface IStaff
     {
         void DisplayStaff();
-        void AddStaff(int sid, List<Staff> staffList);
+        void AddStaff(int sid);
 
     }
 }

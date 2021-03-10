@@ -43,7 +43,7 @@ namespace StaffManagement
                         staffChoice = int.Parse(Console.ReadLine());
                         int flag1;
                         int sid = 0;
-                        Staff s;
+                        Staff s=null;
                         do
                         {
                             Console.WriteLine("Enter the Staff ID");
@@ -59,33 +59,38 @@ namespace StaffManagement
                                 }
 
                             }
-                            catch (Exception e)
+                            catch (Exception ex)
                             {
-                                Console.WriteLine("Entered ID is invalid");
-                                flag1 = 1;
-
+                                if (ex is FormatException || ex is OverflowException)
+                                {
+                                    Console.WriteLine("Entered ID is invalid");
+                                    flag1 = 1;
+                                }
+                                throw;
                             }
 
                         } while (flag1 == 1);
                         if (staffChoice == (int)StaffType.Teaching)
                         {
                             s = new Teaching();
-                            s.AddStaff(sid, staffList);
+                            s.AddStaff(sid);
                         }
                         else if (staffChoice == (int)StaffType.Administration)
                         {
                             s = new Administration();
-                            s.AddStaff(sid, staffList);
+                            s.AddStaff(sid);
                         }
                         else if (staffChoice == (int)StaffType.Supporting)
                         {
                             s = new Supporting();
-                            s.AddStaff(sid, staffList);
+                            s.AddStaff(sid);
                         }
                         else
                         {
                             Console.WriteLine("Invalid choice");
+                            break;
                         }
+                        staffList.Add(s);
                         break;
                     case 2:
                         foreach (Staff t in staffList)

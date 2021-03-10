@@ -38,7 +38,7 @@ namespace StaffLibrary
             Console.Write("Staff:" + "INSTITUTE:" + this.Institute + " |" + "ID:" + this.Sid + "| "
             + "SALARY:" + this.Salary + " |" + "STAFF TYPE:" + this.Designation + "|");
         }
-        public virtual void AddStaff(int sid, List<Staff> staffList)
+        public virtual void AddStaff(int sid)
         {
             //Nullable<int> salary = null;
 
