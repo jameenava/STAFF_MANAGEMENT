@@ -2,10 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Configuration;
 using StaffLibrary;
+using System.IO;
 namespace StaffManagement
 {
     class Program
+
     {
         const string INSTITUTENAME = " ABC SCHOOL";
         static void DisplayStaffMenu()
@@ -18,13 +21,22 @@ namespace StaffManagement
         public enum StaffType { Teaching = 1, Administration = 2, Supporting = 3 };
         static void Main(string[] args)
         {
+            var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            string currentDirectory = Directory.GetCurrentDirectory();
+            var builder = new ConfigurationBuilder()
+                .AddJsonFile(currentDirectory + $"\\appSettings.Development.json", true, true);
+                //.AddJsonFile($"appsettings.{env}.json", true, true)
+                //.AddEnvironmentVariables();
+            var config = builder.Build();
             int yourChoice;
             int staffChoice;
-
-            //List<Teaching> teacherList = new List<Teaching>();
             List<Staff> staffList = new List<Staff>();
-            //initializing object
-
+            var subjectForTeaching = config["SubjectList"];
+            if(!string.IsNullOrEmpty(subjectForTeaching))
+            {
+                Teaching.SubjectList = subjectForTeaching;
+            }
+           
             do
             {
                 Console.WriteLine("Menu");
@@ -36,6 +48,7 @@ namespace StaffManagement
                 Console.Write("Enter your choice:");
                 yourChoice = int.Parse(Console.ReadLine());
                 Console.WriteLine("Enter the details of Staff");
+
                 switch (yourChoice)
                 {
                     case 1:
@@ -43,7 +56,8 @@ namespace StaffManagement
                         staffChoice = int.Parse(Console.ReadLine());
                         int flag1;
                         int sid = 0;
-                        Staff s=null;
+                        Staff staffObject = null;
+
                         do
                         {
                             Console.WriteLine("Enter the Staff ID");
@@ -68,29 +82,32 @@ namespace StaffManagement
                                 }
                                 throw;
                             }
-
                         } while (flag1 == 1);
+
                         if (staffChoice == (int)StaffType.Teaching)
                         {
-                            s = new Teaching();
-                            s.AddStaff(sid);
+                            staffObject = new Teaching();
+                            staffObject.AddStaff(sid);
                         }
+
                         else if (staffChoice == (int)StaffType.Administration)
                         {
-                            s = new Administration();
-                            s.AddStaff(sid);
+                            staffObject = new Administration();
+                            staffObject.AddStaff(sid);
                         }
+
                         else if (staffChoice == (int)StaffType.Supporting)
                         {
-                            s = new Supporting();
-                            s.AddStaff(sid);
+                            staffObject = new Supporting();
+                            staffObject.AddStaff(sid);
                         }
                         else
                         {
                             Console.WriteLine("Invalid choice");
                             break;
                         }
-                        staffList.Add(s);
+
+                        staffList.Add(staffObject);
                         break;
                     case 2:
                         foreach (Staff t in staffList)
@@ -103,6 +120,7 @@ namespace StaffManagement
                         Console.WriteLine("Enter the Id to be searched");
                         int iD = int.Parse(Console.ReadLine());
                         var item = staffList.FirstOrDefault(o => o.Sid == iD);
+
                         if (item != null)
                         {
                             item.DisplayStaff();
@@ -118,6 +136,7 @@ namespace StaffManagement
                         Console.WriteLine("Enter Staff Id which you want to delete:");
                         int staffID = int.Parse(Console.ReadLine());
                         bool result = false;
+
                         foreach (Staff t in staffList)
                         {
                             if (t.Sid == staffID)
