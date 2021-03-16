@@ -23,36 +23,14 @@ namespace StaffLibrary
             set { subjectList = value; }
         }
 
-        public override void DisplayStaff()
+        //public override void DisplayStaff()
+        //{
+           
+        //}
+        public Teaching(int sid,Nullable<int>salary,string designation,string institutename,string subject):base(sid,salary,designation,institutename)
         {
-            Console.WriteLine("____________________________________________________________________");
-            base.DisplayStaff();
-            Console.Write("SUBJECT:/Area:" + this.Subject + "| ");
-            Console.WriteLine(" ");
-        }
-        public override void AddStaff(int sid)
-        {
-            int flag;
-            base.AddStaff(sid);
-            do
-            {
-                flag = 0;
-                Console.WriteLine("Enter subject");
-                this.Subject = Console.ReadLine();
-                //Console.WriteLine(SubjectList);
-                //if (String.IsNullOrWhiteSpace(this.Subject))
-                //{
-                //    this.Subject = null;
-                //}
-                if (SubjectList.Split(",").Contains(this.Subject) == false)
-                {
-                    Console.WriteLine("Entered Subject is invalid");
-                    flag = 1; 
-                }
-
-            } while (flag==1); 
-            this.Designation = "Teaching";
-
+            this.Subject = subject;
+           
         }
     }
 }

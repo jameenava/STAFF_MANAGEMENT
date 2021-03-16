@@ -4,10 +4,13 @@ using System.Text;
 
 namespace StaffLibrary
 {
-    interface IStaff
+    public interface IStaff
     {
-        void DisplayStaff();
-        void AddStaff(int sid);
+        //void DisplayStaff();
+        void AddStaff(Staff staffObject);
+        Staff SearchStaff(int iD);
+        bool DeleteStaff(int staffID);
+        Staff UpdateStaff(int staffID,string subjectOrArea);
 
     }
 }

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace StaffLibrary
 {
-    public abstract class Staff : IStaff
+    public abstract class Staff 
     {
         private string instituteName;
         public string Institute
@@ -13,11 +13,11 @@ namespace StaffLibrary
             set { instituteName = value; }
         }
 
-        private int sid;
-        public int Sid
+        private int staffID;
+        public int StaffID
         {
-            get { return sid; }
-            set { sid = value; }
+            get { return staffID; }
+            set { staffID = value; }
         }
 
         private Nullable<int> salary;
@@ -33,40 +33,22 @@ namespace StaffLibrary
             set { designation = value; }
         }
 
-        public virtual void DisplayStaff()
+        //public virtual void DisplayStaff()
+        //{
+        //    Console.Write("Staff:" + "INSTITUTE:" + this.Institute + " |" + "ID:" + this.StaffID + "| "
+        //    + "SALARY:" + this.Salary + " |" + "STAFF TYPE:" + this.Designation + "|");
+        //}
+        public Staff(int sid,Nullable<int>salary,string designation,string institutename)
         {
-            Console.Write("Staff:" + "INSTITUTE:" + this.Institute + " |" + "ID:" + this.Sid + "| "
-            + "SALARY:" + this.Salary + " |" + "STAFF TYPE:" + this.Designation + "|");
+            this.StaffID = sid;
+            this.Salary = salary;
+            this.Designation = designation;
+            this.Institute = institutename;
         }
-        public virtual void AddStaff(int sid)
-        {
-            //Nullable<int> salary = null;
-
-            int flag2;
-            do
-            {
-                flag2 = 0;
-                Console.WriteLine("Enter salary");
-                string inputSalary = Console.ReadLine();
-                if (String.IsNullOrEmpty(inputSalary))
-                {
-                    this.Salary = null;
-                    Console.WriteLine("Salary Not Entered");
-                }
-                else
-                {
-                    try
-                    {
-                        this.Salary = int.Parse(inputSalary);
-                    }
-                    catch (FormatException e)
-                    {
-                        Console.WriteLine("Entered data is invalid");
-                        flag2 = 1;
-                    }
-                }
-            } while (flag2 == 1);
-            this.Institute = "ABC SCHOOL";
-        }
+        //public virtual void AddStaff(int sid)
+        //{
+        //    //Nullable<int> salary = null;
+           
+        //}
     }
 }

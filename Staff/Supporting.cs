@@ -4,7 +4,7 @@ using System.Text;
 
 namespace StaffLibrary
 {
-    public class Supporting : Staff, IStaff
+    public class Supporting : Staff
     {
         private string supportarea;
 
@@ -13,24 +13,23 @@ namespace StaffLibrary
             get { return supportarea; }
             set { supportarea = value; }
         }
-        public override void DisplayStaff()
+        //public override void DisplayStaff()
+        //{
+        //    Console.WriteLine("____________________________________________________________________");
+        //    base.DisplayStaff();
+        //    Console.Write("SUBJECT:/Area:" + this.SupportArea + "| ");
+        //    Console.WriteLine(" ");
+        //}
+        public Supporting(int sid, Nullable<int> salary, string designation, string institutename, string supportArea) : base(sid, salary, designation, institutename)
         {
-            Console.WriteLine("____________________________________________________________________");
-            base.DisplayStaff();
-            Console.Write("SUBJECT:/Area:" + this.SupportArea + "| ");
-            Console.WriteLine(" ");
-        }
-        public override void AddStaff(int sid)
-        {
-            base.AddStaff(sid);
-            Console.WriteLine("Enter supporting area");
-            this.SupportArea = Console.ReadLine();
-            if (String.IsNullOrWhiteSpace(this.SupportArea))
-            {
-                this.SupportArea = null;
-            }
-            this.Designation = "Supporting";
+            this.SupportArea = supportArea;
 
         }
+        //public override void AddStaff(int sid)
+        //{
+        //    base.AddStaff(sid);
+            
+
+        //}
     }
 }
