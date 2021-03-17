@@ -5,6 +5,8 @@ using System.Linq;
 using Microsoft.Extensions.Configuration;
 using StaffLibrary;
 using System.IO;
+using System.Reflection;
+using System.Runtime.Remoting;
 namespace StaffManagement
 {
     class Program
@@ -69,8 +71,11 @@ namespace StaffManagement
                 //.AddJsonFile($"appsettings.{env}.json", true, true)
                 //.AddEnvironmentVariables();
             var config = builder.Build();
+            //IStaff handle = Activator.CreateInstance("StaffLibrary", "StaffLibrary.Inmemory") as IStaff;
+            ObjectHandle handle = Activator.CreateInstance("StaffLibrary", "StaffLibrary.Inmemory");
+            IStaff istaffObj = (IStaff)handle.Unwrap();
             int yourChoice;
-            Inmemory inmemoryObj = new Inmemory();
+            //Inmemory inmemoryObj = new Inmemory();
 
             var subjectForTeaching = config["SubjectList"];
             if(!string.IsNullOrEmpty(subjectForTeaching))
@@ -87,132 +92,16 @@ namespace StaffManagement
                 switch (yourChoice)
                 {
                     case 1:
-                        DisplayStaffMenu();
-                        Console.WriteLine("Enter the details of Staff");
-                        int staffChoice;
-                        staffChoice = int.Parse(Console.ReadLine());
-                        int flag1;
-                        int sid;
-                        Staff staffObject = null;
-
-                        do
-                        {
-                            Console.WriteLine("Enter the Staff ID");
-                            flag1 = 0;
-                            try
-                            {
-                                sid = int.Parse(Console.ReadLine());
-                                if ((inmemoryObj.StaffList.Exists(s => s.StaffID == sid) &&inmemoryObj.StaffList.Count > 0))
-                                {
-                                    Console.WriteLine("Staff already exists with id:" + sid);
-                                    Console.WriteLine("Re enter ID");
-                                    flag1 = 1;
-                                }
-
-                            }
-                            catch (Exception ex)
-                            {
-                                if (ex is FormatException || ex is OverflowException)
-                                {
-                                    Console.WriteLine("Entered ID is invalid");
-                                    flag1 = 1;
-                                }
-                                throw;
-                            }
-                        } while (flag1 == 1);
-                        int flag;
-                        //base.AddStaff(sid);
-                        int flag2;
-                        Nullable<int> salary = 0;
-                        do
-                        {
-                            flag2 = 0;
-                            Console.WriteLine("Enter salary");
-                            string inputSalary = Console.ReadLine();
-                            if (String.IsNullOrEmpty(inputSalary))
-                            {
-                                salary = null;
-                                Console.WriteLine("Salary Not Entered");
-                            }
-                            else
-                            {
-                                try
-                                {
-                                    salary = int.Parse(inputSalary);
-                                }
-                                catch (FormatException e)
-                                {
-                                    Console.WriteLine("Entered data is invalid");
-                                    flag2 = 1;
-                                }
-                            }
-                        } while (flag2 == 1);
-                        string subject;
-
-                        if (staffChoice == 1)
-                        {
-                            do
-                            {
-                                flag = 0;
-                                Console.WriteLine("Enter subject");
-                                subject = Console.ReadLine();
-                                //Console.WriteLine(SubjectList);
-                                //if (String.IsNullOrWhiteSpace(this.Subject))
-                                //{
-                                //    this.Subject = null;
-                                //}
-                                if (Teaching.SubjectList.Split(",").Contains(subject) == false)
-                                {
-                                    Console.WriteLine("Entered Subject is invalid");
-                                    flag = 1;
-                                }
-
-                            } while (flag == 1);
-                            string designation = Enum.GetName(typeof(StaffType), 1);
-                            staffObject = new Teaching(sid, salary, designation, INSTITUTENAME, subject);
-                            //staffObject.AddStaff(sid);
-                        }
-                        else if (staffChoice == 2)
-                        {
-                            Console.WriteLine("Enter Administration area");
-                            string adminArea = Console.ReadLine();
-                            if (String.IsNullOrWhiteSpace(adminArea))
-                            {
-                                adminArea = null;
-                            }
-                            string designation = Enum.GetName(typeof(StaffType), 2);
-                            staffObject = new Administration(sid, salary, designation, INSTITUTENAME, adminArea);
-                            //staffObject = new Administration();
-                            //staffObject.AddStaff(sid);
-                        }
-
-                        else if (staffChoice == 3)
-                        {
-                            Console.WriteLine("Enter supporting area");
-                            string supportArea = Console.ReadLine();
-                            if (String.IsNullOrWhiteSpace(supportArea))
-                            {
-                                supportArea = null;
-                            }
-                            string designation = Enum.GetName(typeof(StaffType), 3);
-                            // staffObject = new Supporting();
-                            //staffObject.AddStaff(sid);
-                        }
-                        else
-                        {
-                            Console.WriteLine("Invalid choice");
-                        }
-
-                        inmemoryObj.AddStaff(staffObject);
+                         AddDetails(istaffObj);
                         break;
                     case 2:
-                        ViewAllStaff(inmemoryObj.StaffList);
+                        ViewAllStaff(((Inmemory)istaffObj).StaffList);
                         break;
 
                     case 3:
                         Console.WriteLine("Enter the Id to be searched");
                         int iD = int.Parse(Console.ReadLine());
-                        var item=inmemoryObj.SearchStaff(iD);
+                        var item=istaffObj.SearchStaff(iD);
                         if (item != null)
                         {
                             DisplayStaff(item);
@@ -227,66 +116,14 @@ namespace StaffManagement
                     case 4:
                         Console.WriteLine("Enter Staff Id which you want to delete:");
                         int staffID = int.Parse(Console.ReadLine());
-                        bool result=inmemoryObj.DeleteStaff(staffID);
+                        bool result=istaffObj.DeleteStaff(staffID);
                         if (result == true)
                             Console.WriteLine("Employee deleted");
                         else
                             Console.WriteLine("Employee with ID:" + staffID + " not found");
                         break;
                     case 5:
-                        Console.WriteLine("Enter Staff Id which you want to update:");
-                        staffID = int.Parse(Console.ReadLine());
-                        item = inmemoryObj.StaffList.FirstOrDefault(o => o.StaffID == staffID);
-                        string subjectOrArea;
-                        if (item!=null)
-                        {
-                            Console.WriteLine("Enter the details to update");
-                            if (item.Designation == Enum.GetName(typeof(StaffType), 1))
-                            {
-                                Console.WriteLine("Old Subject is" + ((Teaching)item).Subject);
-                                do
-                                {
-                                    flag = 0;
-                                    Console.WriteLine("Enter new subject");
-                                    subjectOrArea = Console.ReadLine();
-                                    //Console.WriteLine(SubjectList);
-                                    //if (String.IsNullOrWhiteSpace(this.Subject))
-                                    //{
-                                    //    this.Subject = null;
-                                    //}
-                                    if (Teaching.SubjectList.Split(",").Contains(subjectOrArea) == false)
-                                    {
-                                        Console.WriteLine("Entered Subject is invalid");
-                                        flag = 1;
-                                    }
-
-                                } while (flag == 1);
-
-                            }
-                            else if (item.Designation == Enum.GetName(typeof(StaffType), 2))
-                            {
-                                Console.WriteLine("Old area is" + ((Administration)item).AdminArea);
-                                Console.WriteLine("Enter Administration area");
-                                subjectOrArea = Console.ReadLine();
-                                if (String.IsNullOrWhiteSpace(subjectOrArea))
-                                {
-                                    subjectOrArea = null;
-                                }
-                            }
-                            else
-                            {
-                                Console.WriteLine("Old area is" + ((Supporting)item).SupportArea);
-                                Console.WriteLine("Enter Administration area");
-                                subjectOrArea = Console.ReadLine();
-                                if (String.IsNullOrWhiteSpace(subjectOrArea))
-                                {
-                                    subjectOrArea = null;
-                                }
-                            }
-
-                            inmemoryObj.UpdateStaff(staffID, subjectOrArea);
-
-                        }
+                        UpdateDetails(istaffObj);
                         break;
                     case 6:
                         return;
@@ -296,6 +133,191 @@ namespace StaffManagement
                         break;
                 }
             } while (true);
+        }
+
+        private static void AddDetails(IStaff istaffObj)
+        {
+            DisplayStaffMenu();
+            Console.WriteLine("Enter the details of Staff");
+            int staffChoice;
+            staffChoice = int.Parse(Console.ReadLine());
+            int flag1;
+            int sid;
+            Staff staffObject = null;
+
+            do
+            {
+                Console.WriteLine("Enter the Staff ID");
+                flag1 = 0;
+                try
+                {
+                    sid = int.Parse(Console.ReadLine());
+                    flag1 = istaffObj.IfExists(sid);
+                    if (flag1 == 1)
+                    {
+                        Console.WriteLine("Staff already exists with id:" + sid);
+                        Console.WriteLine("Re enter ID");
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    if (ex is FormatException || ex is OverflowException)
+                    {
+                        Console.WriteLine("Entered ID is invalid");
+                        flag1 = 1;
+                    }
+                    throw;
+                }
+            } while (flag1 == 1);
+            int flag;
+            //base.AddStaff(sid);
+            int flag2;
+            Nullable<int> salary = 0;
+            do
+            {
+                flag2 = 0;
+                Console.WriteLine("Enter salary");
+                string inputSalary = Console.ReadLine();
+                if (String.IsNullOrEmpty(inputSalary))
+                {
+                    salary = null;
+                    Console.WriteLine("Salary Not Entered");
+                }
+                else
+                {
+                    try
+                    {
+                        salary = int.Parse(inputSalary);
+                    }
+                    catch (FormatException e)
+                    {
+                        Console.WriteLine("Entered data is invalid");
+                        flag2 = 1;
+                    }
+                }
+            } while (flag2 == 1);
+            string subject;
+
+            if (staffChoice == 1)
+            {
+                do
+                {
+                    flag = 0;
+                    Console.WriteLine("Enter subject");
+                    subject = Console.ReadLine();
+                    //Console.WriteLine(SubjectList);
+                    //if (String.IsNullOrWhiteSpace(this.Subject))
+                    //{
+                    //    this.Subject = null;
+                    //}
+                    if (Teaching.SubjectList.Split(",").Contains(subject) == false)
+                    {
+                        Console.WriteLine("Entered Subject is invalid");
+                        flag = 1;
+                    }
+
+                } while (flag == 1);
+                string designation = Enum.GetName(typeof(StaffType), 1);
+                staffObject = new Teaching(sid, salary, designation, INSTITUTENAME, subject);
+                //staffObject.AddStaff(sid);
+            }
+            else if (staffChoice == 2)
+            {
+                Console.WriteLine("Enter Administration area");
+                string adminArea = Console.ReadLine();
+                if (String.IsNullOrWhiteSpace(adminArea))
+                {
+                    adminArea = null;
+                }
+                string designation = Enum.GetName(typeof(StaffType), 2);
+                staffObject = new Administration(sid, salary, designation, INSTITUTENAME, adminArea);
+                //staffObject = new Administration();
+                //staffObject.AddStaff(sid);
+            }
+
+            else if (staffChoice == 3)
+            {
+                Console.WriteLine("Enter supporting area");
+                string supportArea = Console.ReadLine();
+                if (String.IsNullOrWhiteSpace(supportArea))
+                {
+                    supportArea = null;
+                }
+                string designation = Enum.GetName(typeof(StaffType), 3);
+                // staffObject = new Supporting();
+                //staffObject.AddStaff(sid);
+            }
+            else
+            {
+                Console.WriteLine("Invalid choice");
+            }
+
+            istaffObj.AddStaff(staffObject);
+     
+        }
+
+        private static void UpdateDetails(IStaff istaffObj)
+        {
+            Console.WriteLine("Enter Staff Id which you want to update:");
+            int staffID = int.Parse(Console.ReadLine());
+            var item = ((Inmemory)istaffObj).StaffList.FirstOrDefault(o => o.StaffID == staffID);
+            string subjectOrArea;
+            int flag=0;
+            if (item != null)
+            {
+                Console.WriteLine("Enter the details to update");
+                if (item.Designation == Enum.GetName(typeof(StaffType), 1))
+                {
+                    Console.WriteLine("Old Subject is" + ((Teaching)item).Subject);
+                    do
+                    {
+                        flag = 0;
+                        Console.WriteLine("Enter new subject");
+                        subjectOrArea = Console.ReadLine();
+                        //Console.WriteLine(SubjectList);
+                        //if (String.IsNullOrWhiteSpace(this.Subject))
+                        //{
+                        //    this.Subject = null;
+                        //}
+                        if (Teaching.SubjectList.Split(",").Contains(subjectOrArea) == false)
+                        {
+                            Console.WriteLine("Entered Subject is invalid");
+                            flag = 1;
+                        }
+
+                    } while (flag == 1);
+
+                }
+                else if (item.Designation == Enum.GetName(typeof(StaffType), 2))
+                {
+                    Console.WriteLine("Old area is" + ((Administration)item).AdminArea);
+                    Console.WriteLine("Enter Administration area");
+                    subjectOrArea = Console.ReadLine();
+                    if (String.IsNullOrWhiteSpace(subjectOrArea))
+                    {
+                        subjectOrArea = null;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Old area is" + ((Supporting)item).SupportArea);
+                    Console.WriteLine("Enter Administration area");
+                    subjectOrArea = Console.ReadLine();
+                    if (String.IsNullOrWhiteSpace(subjectOrArea))
+                    {
+                        subjectOrArea = null;
+                    }
+                }
+
+                istaffObj.UpdateStaff(staffID, subjectOrArea);
+                Console.WriteLine("Staff Details are updated");
+
+            }
+            else
+            {
+                Console.WriteLine("Staff with id" + staffID + "does not exists");
+            }
         }
     }
 }

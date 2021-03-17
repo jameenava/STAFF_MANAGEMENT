@@ -17,7 +17,15 @@ namespace StaffLibrary
             set { staffList = value; }
         }
 
-
+        public int IfExists(int sid)
+        {
+            int flag = 0;
+            if ((StaffList.Exists(s => s.StaffID == sid) && StaffList.Count > 0))
+            {
+                flag = 1;
+            }
+            return flag;
+        }
 
 
         public  Staff SearchStaff(int iD)
@@ -38,10 +46,17 @@ namespace StaffLibrary
             return result;
 
         }
-        
+        //public  Staff ViewAllStaff()
+        //{
+        //    foreach (Staff t in staffList)
+    
+        //}
+
         public void AddStaff(Staff staffObject)
         {
+            
             staffList.Add(staffObject);
+           
 
         }
 

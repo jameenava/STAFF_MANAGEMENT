@@ -11,6 +11,8 @@ namespace StaffLibrary
         Staff SearchStaff(int iD);
         bool DeleteStaff(int staffID);
         Staff UpdateStaff(int staffID,string subjectOrArea);
+        int IfExists(int sid);
+        //Staff ViewAllStaff();
 
     }
 }
