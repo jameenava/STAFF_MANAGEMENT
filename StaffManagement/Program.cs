@@ -7,6 +7,8 @@ using StaffLibrary;
 using System.IO;
 using System.Reflection;
 using System.Runtime.Remoting;
+using System.Xml;
+using System.Xml.Serialization;
 namespace StaffManagement
 {
     class Program
@@ -68,21 +70,16 @@ namespace StaffManagement
             string currentDirectory = Directory.GetCurrentDirectory();
             var builder = new ConfigurationBuilder()
                 .AddJsonFile(currentDirectory + $"\\appSettings.Development.json", true, true);
-                //.AddJsonFile($"appsettings.{env}.json", true, true)
-                //.AddEnvironmentVariables();
             var config = builder.Build();
-            //IStaff handle = Activator.CreateInstance("StaffLibrary", "StaffLibrary.Inmemory") as IStaff;
-            ObjectHandle handle = Activator.CreateInstance("StaffLibrary", "StaffLibrary.Inmemory");
+            ObjectHandle handle = Activator.CreateInstance("StaffLibrary", "StaffLibrary.XmlFileOp");
             IStaff istaffObj = (IStaff)handle.Unwrap();
+            ((ISerialize)istaffObj).Deserialize();
             int yourChoice;
-            //Inmemory inmemoryObj = new Inmemory();
-
             var subjectForTeaching = config["SubjectList"];
             if(!string.IsNullOrEmpty(subjectForTeaching))
             {
                 Teaching.SubjectList = subjectForTeaching;
             }
-           
             do
             {
                 DisplayStaffOpMenu();
@@ -95,7 +92,7 @@ namespace StaffManagement
                          AddDetails(istaffObj);
                         break;
                     case 2:
-                        ViewAllStaff(((Inmemory)istaffObj).StaffList);
+                        ViewAllStaff(((XmlFileOp)istaffObj).StaffList);
                         break;
 
                     case 3:
@@ -126,6 +123,7 @@ namespace StaffManagement
                         UpdateDetails(istaffObj);
                         break;
                     case 6:
+                            ((ISerialize)istaffObj).Serialize();
                         return;
 
                     default:
@@ -245,6 +243,7 @@ namespace StaffManagement
                     supportArea = null;
                 }
                 string designation = Enum.GetName(typeof(StaffType), 3);
+                staffObject = new Supporting(sid, salary, designation, INSTITUTENAME, supportArea);
                 // staffObject = new Supporting();
                 //staffObject.AddStaff(sid);
             }
@@ -261,7 +260,7 @@ namespace StaffManagement
         {
             Console.WriteLine("Enter Staff Id which you want to update:");
             int staffID = int.Parse(Console.ReadLine());
-            var item = ((Inmemory)istaffObj).StaffList.FirstOrDefault(o => o.StaffID == staffID);
+            var item = ((XmlFileOp)istaffObj).StaffList.FirstOrDefault(o => o.StaffID == staffID);
             string subjectOrArea;
             int flag=0;
             if (item != null)

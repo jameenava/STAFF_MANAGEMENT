@@ -2,15 +2,17 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using System.Xml.Serialization;
 
 namespace StaffLibrary
 {
+    [XmlRoot("Staff")]
     public class Inmemory : IStaff
     {
         
         const string INSTITUTENAME = " ABC SCHOOL";
-        private List<Staff> staffList = new List<Staff>();
-
+        public List<Staff> staffList = new List<Staff>();
+        [XmlElement("Staff")]
         public List<Staff> StaffList
         {
             get { return staffList; }
@@ -31,7 +33,6 @@ namespace StaffLibrary
         public  Staff SearchStaff(int iD)
         {
             var item = staffList.FirstOrDefault(o => o.StaffID == iD);
-            Console.WriteLine(item);
             return item;
         }
         public bool DeleteStaff(int staffID)

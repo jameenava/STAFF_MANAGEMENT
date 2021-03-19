@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace StaffLibrary
 {
+    [XmlType("Supporting")]
+    [XmlRoot("Supporting")]
     public class Supporting : Staff
     {
         private string supportarea;
@@ -20,6 +23,10 @@ namespace StaffLibrary
         //    Console.Write("SUBJECT:/Area:" + this.SupportArea + "| ");
         //    Console.WriteLine(" ");
         //}
+        public Supporting()
+        {
+
+        }
         public Supporting(int sid, Nullable<int> salary, string designation, string institutename, string supportArea) : base(sid, salary, designation, institutename)
         {
             this.SupportArea = supportArea;

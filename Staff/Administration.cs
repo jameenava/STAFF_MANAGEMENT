@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace StaffLibrary
 {
+    [XmlType("Administration")]
+    [XmlRoot("Administration")]
     public class Administration : Staff
     {
         private string adminArea;
@@ -20,6 +23,10 @@ namespace StaffLibrary
         //    Console.Write("SUBJECT:/Area:" + this.AdminArea + "| ");
         //    Console.WriteLine(" ");
         //}
+        public Administration()
+        {
+
+        }
         public Administration(int sid, Nullable<int> salary, string designation, string institutename, string administrationArea) : base(sid, salary, designation, institutename)
         {
             this.AdminArea = administrationArea;

@@ -1,9 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace StaffLibrary
 {
+    [XmlRoot("Staff")]
+    [XmlType("Staff")] 
+    // define Type
+    [XmlInclude(typeof(Teaching)), XmlInclude(typeof(Administration)), XmlInclude(typeof(Supporting))]
+    // include type class SpecialPerson and class SuperPerson
     public abstract class Staff 
     {
         private string instituteName;
@@ -37,7 +43,11 @@ namespace StaffLibrary
         //{
         //    Console.Write("Staff:" + "INSTITUTE:" + this.Institute + " |" + "ID:" + this.StaffID + "| "
         //    + "SALARY:" + this.Salary + " |" + "STAFF TYPE:" + this.Designation + "|");
-        //}
+        //
+        public Staff()
+        {
+
+        }
         public Staff(int sid,Nullable<int>salary,string designation,string institutename)
         {
             this.StaffID = sid;
