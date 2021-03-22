@@ -16,13 +16,6 @@ namespace StaffLibrary
             get { return supportarea; }
             set { supportarea = value; }
         }
-        //public override void DisplayStaff()
-        //{
-        //    Console.WriteLine("____________________________________________________________________");
-        //    base.DisplayStaff();
-        //    Console.Write("SUBJECT:/Area:" + this.SupportArea + "| ");
-        //    Console.WriteLine(" ");
-        //}
         public Supporting()
         {
 
@@ -32,11 +25,5 @@ namespace StaffLibrary
             this.SupportArea = supportArea;
 
         }
-        //public override void AddStaff(int sid)
-        //{
-        //    base.AddStaff(sid);
-            
-
-        //}
     }
 }

@@ -47,18 +47,10 @@ namespace StaffLibrary
             return result;
 
         }
-        //public  Staff ViewAllStaff()
-        //{
-        //    foreach (Staff t in staffList)
-    
-        //}
-
         public void AddStaff(Staff staffObject)
         {
             
             staffList.Add(staffObject);
-           
-
         }
 
         public Staff UpdateStaff(int staffID,string subjectOrArea)

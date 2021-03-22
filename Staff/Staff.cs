@@ -7,9 +7,7 @@ namespace StaffLibrary
 {
     [XmlRoot("Staff")]
     [XmlType("Staff")] 
-    // define Type
     [XmlInclude(typeof(Teaching)), XmlInclude(typeof(Administration)), XmlInclude(typeof(Supporting))]
-    // include type class SpecialPerson and class SuperPerson
     public abstract class Staff 
     {
         private string instituteName;
@@ -38,12 +36,6 @@ namespace StaffLibrary
             get { return designation; }
             set { designation = value; }
         }
-
-        //public virtual void DisplayStaff()
-        //{
-        //    Console.Write("Staff:" + "INSTITUTE:" + this.Institute + " |" + "ID:" + this.StaffID + "| "
-        //    + "SALARY:" + this.Salary + " |" + "STAFF TYPE:" + this.Designation + "|");
-        //
         public Staff()
         {
 
@@ -55,10 +47,5 @@ namespace StaffLibrary
             this.Designation = designation;
             this.Institute = institutename;
         }
-        //public virtual void AddStaff(int sid)
-        //{
-        //    //Nullable<int> salary = null;
-           
-        //}
     }
 }

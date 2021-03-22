@@ -10,7 +10,7 @@ namespace StaffLibrary
     [XmlRoot("Teaching")]
     public class Teaching : Staff
     {
-        
+
         private string subject;
 
         public string Subject
@@ -25,19 +25,14 @@ namespace StaffLibrary
             get { return subjectList; }
             set { subjectList = value; }
         }
-
-        //public override void DisplayStaff()
-        //{
-           
-        //}
         public Teaching()
         {
 
         }
-        public Teaching(int sid,Nullable<int>salary,string designation,string institutename,string subject):base(sid,salary,designation,institutename)
+        public Teaching(int sid, Nullable<int> salary, string designation, string institutename, string subject) : base(sid, salary, designation, institutename)
         {
             this.Subject = subject;
-           
+
         }
     }
 }

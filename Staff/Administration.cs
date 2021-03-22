@@ -16,13 +16,6 @@ namespace StaffLibrary
             get { return adminArea; }
             set { adminArea = value; }
         }
-        //public override void DisplayStaff()
-        //{
-        //    Console.WriteLine("____________________________________________________________________");
-        //    base.DisplayStaff();
-        //    Console.Write("SUBJECT:/Area:" + this.AdminArea + "| ");
-        //    Console.WriteLine(" ");
-        //}
         public Administration()
         {
 
@@ -32,10 +25,5 @@ namespace StaffLibrary
             this.AdminArea = administrationArea;
 
         }
-        //public override void AddStaff(int sid)
-        //{
-        //    base.AddStaff(sid);
-            
-        //}
     }
 }

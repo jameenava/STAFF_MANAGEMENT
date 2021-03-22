@@ -4,7 +4,7 @@ using System.Text;
 
 namespace StaffLibrary
 {
-    public interface ISerialize
+    interface ISerialize
     {
         public void Serialize();
         public void Deserialize();
