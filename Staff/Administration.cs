@@ -20,7 +20,12 @@ namespace StaffLibrary
         {
 
         }
-        public Administration(int sid, Nullable<int> salary, string designation, string institutename, string administrationArea) : base(sid, salary, designation, institutename)
+        public Administration(int sid, int eid, Nullable<int> salary, int designation, string institutename, string administrationArea) : base(sid, eid, salary, designation, institutename)
+        {
+            this.AdminArea = administrationArea;
+
+        }
+        public Administration(int sid, Nullable<int> salary, int designation, string institutename, string administrationArea) : base(sid, salary, designation, institutename)
         {
             this.AdminArea = administrationArea;
 

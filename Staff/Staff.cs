@@ -23,6 +23,7 @@ namespace StaffLibrary
             get { return staffID; }
             set { staffID = value; }
         }
+        public int EmployeeID;
 
         private Nullable<int> salary;
         public Nullable<int> Salary
@@ -30,8 +31,8 @@ namespace StaffLibrary
             get { return salary; }
             set { salary = value; }
         }
-        private string designation;
-        public string Designation
+        private int designation;
+        public int Designation
         {
             get { return designation; }
             set { designation = value; }
@@ -40,9 +41,17 @@ namespace StaffLibrary
         {
 
         }
-        public Staff(int sid,Nullable<int>salary,string designation,string institutename)
+        public Staff(int sid,int eid,Nullable<int>salary,int designation,string institutename)
         {
-            this.StaffID = sid;
+            this.staffID = sid;
+            this.EmployeeID = eid;
+            this.Salary = salary;
+            this.Designation = designation;
+            this.Institute = institutename;
+        }
+        public Staff(int sid, Nullable<int> salary, int designation, string institutename)
+        {
+            this.staffID = sid;
             this.Salary = salary;
             this.Designation = designation;
             this.Institute = institutename;

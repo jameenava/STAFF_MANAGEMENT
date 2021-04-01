@@ -10,6 +10,7 @@ using System.Runtime.Remoting;
 using System.Xml;
 using System.Xml.Serialization;
 using Newtonsoft.Json;
+using System.Configuration;
 
 namespace StaffManagement
 {
@@ -40,37 +41,35 @@ namespace StaffManagement
             Console.WriteLine("1.Xml File");
             Console.WriteLine("2.Json File");
         }
-        public static void DisplayStaff(Staff staff)
+        public static void DisplayAllStaff(List<Staff> staffs)
         {
-
-            Console.WriteLine("____________________________________________________________________");
-            Console.Write("STAFF:" + "INSTITUTE:" + staff.Institute + " |" + "ID:" + staff.StaffID + "| " + "SALARY:" + staff.Salary + " |" + "STAFF TYPE:" + staff.Designation);
-            if (staff.Designation == Enum.GetName(typeof(StaffType), 1))
+            foreach (Staff staff in staffs)
             {
+                DisplayStaff(staff);
+            }
 
-                Console.Write(" |" + "AREA/SUBJECT:" + ((Teaching)staff).Subject);
+        }
+        public static void DisplayStaff(Staff item)
+        {
+            Console.WriteLine("____________________________________________________________________");
+            Console.Write("STAFF:" + "INSTITUTE:" + item.Institute + " |" + "ID:" + item.StaffID + "| " + "EMPLOYEE ID:" + item.EmployeeID +
+            "| " + "SALARY:" + item.Salary + " |" + "STAFF TYPE:" + item.Designation);
+            if (item.Designation == (int)StaffType.Teaching)
+            {
+                Console.Write(" |" + "AREA/SUBJECT:" + ((Teaching)item).Subject);
                 Console.WriteLine(" ");
             }
-            else if (staff.Designation == Enum.GetName(typeof(StaffType), 2))
+            else if (item.Designation == (int)StaffType.Administration)
             {
-
-                Console.Write(" |" + "AREA/SUBJECT:" + ((Administration)staff).AdminArea);
+                Console.Write(" |" + "AREA/SUBJECT:" + ((Administration)item).AdminArea);
                 Console.WriteLine(" ");
             }
             else
             {
-                Console.Write(" |" + "AREA/SUBJECT:" + ((Supporting)staff).SupportArea);
+                Console.Write(" |" + "AREA/SUBJECT:" + ((Supporting)item).SupportArea);
                 Console.WriteLine(" ");
             }
             Console.WriteLine("____________________________________________________________________");
-        }
-        public static void ViewAllStaff(List<Staff> staffList)
-        {
-            foreach (Staff t in staffList)
-            {
-                DisplayStaff(t);
-            };
-
         }
         static void Main(string[] args)
         {
@@ -79,14 +78,9 @@ namespace StaffManagement
             var builder = new ConfigurationBuilder()
                 .AddJsonFile(currentDirectory + $"\\appSettings.Development.json", true, true);
             var config = builder.Build();
-            ObjectHandle handle1 = Activator.CreateInstance("StaffLibrary", "StaffLibrary.JsonFileOP");
-            ObjectHandle handle2 = Activator.CreateInstance("StaffLibrary", "StaffLibrary.XmlFileOp");
-            IStaff istaffObj = (IStaff)handle1.Unwrap(); 
-            IStaff istaffObj1 = (IStaff)handle2.Unwrap();
-            ((JsonFileOP)istaffObj).Deserialize();
-            ((XmlFileOp)istaffObj1).Deserialize();
+            ObjectHandle handle1 = Activator.CreateInstance("StaffLibrary", "StaffLibrary.DbProcedures");
+            IStaff istaffObj = (IStaff)handle1.Unwrap();
             int yourChoice;
-            int storageChoice;
             var subjectForTeaching = config["SubjectList"];
             if (!string.IsNullOrEmpty(subjectForTeaching))
             {
@@ -95,56 +89,32 @@ namespace StaffManagement
             do
             {
                 DisplayStaffOpMenu();
-               
                 Console.Write("Enter your choice:");
                 yourChoice = int.Parse(Console.ReadLine());
-                DisplayStorageMenu();
-                storageChoice = int.Parse(Console.ReadLine());
-
                 switch (yourChoice)
                 {
                     case 1:
-                        if(storageChoice==1)
-                         AddDetails(istaffObj1);
-                        if(storageChoice==2)
-                         AddDetails(istaffObj);
+
+                        AddDetails(istaffObj);
 
                         break;
                     case 2:
-                        if(storageChoice==2)
-                         ViewAllStaff(((JsonFileOP)istaffObj).StaffList);
-                        if (storageChoice == 1)
-                            ViewAllStaff(((XmlFileOp)istaffObj1).StaffList);
+                        List<Staff> staffs = istaffObj.ViewAllStaff();
+                        DisplayAllStaff(staffs);
                         break;
 
                     case 3:
                         Console.WriteLine("Enter the Id to be searched");
                         int iD = int.Parse(Console.ReadLine());
-                        if(storageChoice==1)
+                        var item = istaffObj.SearchStaff(iD);
+                        if (item != null)
                         {
-                            var item = istaffObj1.SearchStaff(iD);
-                            if (item != null)
-                            {
-                                DisplayStaff(item);
-                            }
-                            else
-                            {
-                                Console.WriteLine("Staff with id:" + iD + " does not exist");
-
-                            }
+                            DisplayStaff(item);
                         }
-                        if (storageChoice == 2)
+                        else
                         {
-                            var item = istaffObj.SearchStaff(iD);
-                            if (item != null)
-                            {
-                                DisplayStaff(item);
-                            }
-                            else
-                            {
-                                Console.WriteLine("Staff with id:" + iD + " does not exist");
+                            Console.WriteLine("Staff with id:" + iD + " does not exist");
 
-                            }
                         }
 
                         break;
@@ -152,75 +122,46 @@ namespace StaffManagement
                     case 4:
                         Console.WriteLine("Enter Staff Id which you want to delete:");
                         int staffID = int.Parse(Console.ReadLine());
-                        if(storageChoice==1)
-                        {
-                            bool result = istaffObj1.DeleteStaff(staffID);
-                            if (result == true)
-                                Console.WriteLine("Employee deleted");
-                            else
-                                Console.WriteLine("Employee with ID:" + staffID + " not found");
-                        }
-                        if(storageChoice==2)
-                        {
-                            bool result = istaffObj.DeleteStaff(staffID);
-                            if (result == true)
-                                Console.WriteLine("Employee deleted");
-                            else
-                                Console.WriteLine("Employee with ID:" + staffID + " not found");
-                        }
-                        
+                        bool result = istaffObj.DeleteStaff(staffID);
+                        if (result == true)
+                            Console.WriteLine("Employee deleted");
+                        else
+                            Console.WriteLine("Employee with ID:" + staffID + " not found");
                         break;
                     case 5:
-                        if (storageChoice==1)
-                        {
-                            UpdateDetails(istaffObj1);
-
-                        }
-                        if (storageChoice == 2)
-                        {
-                            UpdateDetails(istaffObj);
-
-                        }
-
-
+                        UpdateDetails(istaffObj);
                         break;
                     case 6:
-                        if(storageChoice==2)
-                            ((JsonFileOP)istaffObj).Serialize();
-                        if(storageChoice==1)
-                            ((XmlFileOp)istaffObj1).Serialize();
-
                         return;
-
                     default:
                         Console.WriteLine("invalid choice");
                         break;
                 }
             } while (true);
         }
-
         private static void AddDetails(IStaff istaffObj)
         {
             DisplayStaffMenu();
             Console.WriteLine("Enter the details of Staff");
             int staffChoice;
             staffChoice = int.Parse(Console.ReadLine());
-            int flag1;
+            bool isStaff;
             int sid;
             Staff staffObject = null;
 
             do
             {
                 Console.WriteLine("Enter the Staff ID");
-                flag1 = 0;
+                isStaff = false;
                 try
                 {
                     sid = int.Parse(Console.ReadLine());
-                    flag1 = istaffObj.IfExists(sid);
-                    if (flag1 == 1)
+                    var item = istaffObj.SearchStaff(sid);
+                    if (item != null)
                     {
                         Console.WriteLine("Staff already exists with id:" + sid);
                         Console.WriteLine("Re enter ID");
+                        isStaff = true;
                     }
 
                 }
@@ -229,17 +170,16 @@ namespace StaffManagement
                     if (ex is FormatException || ex is OverflowException)
                     {
                         Console.WriteLine("Entered ID is invalid");
-                        flag1 = 1;
                     }
                     throw;
                 }
-            } while (flag1 == 1);
-            int flag;
-            int flag2;
+            } while (isStaff);
+            bool isSubject;
+            bool isSalary;
             Nullable<int> salary = 0;
             do
             {
-                flag2 = 0;
+                isSalary = false;
                 Console.WriteLine("Enter salary");
                 string inputSalary = Console.ReadLine();
                 if (String.IsNullOrEmpty(inputSalary))
@@ -253,30 +193,29 @@ namespace StaffManagement
                     {
                         salary = int.Parse(inputSalary);
                     }
-                    catch (FormatException e)
+                    catch (FormatException)
                     {
                         Console.WriteLine("Entered data is invalid");
-                        flag2 = 1;
+                        isSalary = true;
                     }
                 }
-            } while (flag2 == 1);
+            } while (isSalary);
             string subject;
-
             if (staffChoice == 1)
             {
                 do
                 {
-                    flag = 0;
+                    isSubject = false;
                     Console.WriteLine("Enter subject");
                     subject = Console.ReadLine();
                     if (Teaching.SubjectList.Split(",").Contains(subject) == false)
                     {
                         Console.WriteLine("Entered Subject is invalid");
-                        flag = 1;
+                        isSubject = true;
                     }
 
-                } while (flag == 1);
-                string designation = Enum.GetName(typeof(StaffType), 1);
+                } while (isSubject);
+                int designation = (int)StaffType.Teaching;
                 staffObject = new Teaching(sid, salary, designation, INSTITUTENAME, subject);
             }
             else if (staffChoice == 2)
@@ -287,7 +226,7 @@ namespace StaffManagement
                 {
                     adminArea = null;
                 }
-                string designation = Enum.GetName(typeof(StaffType), 2);
+                int designation = (int)StaffType.Administration;
                 staffObject = new Administration(sid, salary, designation, INSTITUTENAME, adminArea);
             }
 
@@ -299,8 +238,9 @@ namespace StaffManagement
                 {
                     supportArea = null;
                 }
-                string designation = Enum.GetName(typeof(StaffType), 3);
+                int designation = (int)StaffType.Supporting;
                 staffObject = new Supporting(sid, salary, designation, INSTITUTENAME, supportArea);
+
             }
             else
             {
@@ -312,15 +252,15 @@ namespace StaffManagement
 
         private static void UpdateDetails(IStaff istaffObj)
         {
-            Console.WriteLine("Enter Staff Id which you want to update:");
+            Console.WriteLine("Enter Employee Id which you want to update:");
             int staffID = int.Parse(Console.ReadLine());
-            var item = ((JsonFileOP)istaffObj).StaffList.FirstOrDefault(o => o.StaffID == staffID);
+            var item = istaffObj.SearchStaff(staffID);
             string subjectOrArea;
             int flag = 0;
             if (item != null)
             {
                 Console.WriteLine("Enter the details to update");
-                if (item.Designation == Enum.GetName(typeof(StaffType), 1))
+                if (item.Designation == (int)StaffType.Teaching)
                 {
                     Console.WriteLine("Old Subject is" + ((Teaching)item).Subject);
                     do
@@ -337,7 +277,7 @@ namespace StaffManagement
                     } while (flag == 1);
 
                 }
-                else if (item.Designation == Enum.GetName(typeof(StaffType), 2))
+                else if (item.Designation == (int)StaffType.Administration)
                 {
                     Console.WriteLine("Old area is" + ((Administration)item).AdminArea);
                     Console.WriteLine("Enter Administration area");

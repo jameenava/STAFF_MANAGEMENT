@@ -9,7 +9,7 @@ namespace StaffLibrary
     [XmlRoot("Staff")]
     public class Inmemory : IStaff
     {
-        
+
         const string INSTITUTENAME = " ABC SCHOOL";
         public List<Staff> staffList = new List<Staff>();
         [XmlElement("Staff")]
@@ -30,17 +30,17 @@ namespace StaffLibrary
         }
 
 
-        public  Staff SearchStaff(int iD)
+        public Staff SearchStaff(int iD)
         {
             var item = staffList.FirstOrDefault(o => o.StaffID == iD);
             return item;
         }
         public bool DeleteStaff(int staffID)
         {
-            
+
             bool result = false;
             var item = staffList.FirstOrDefault(o => o.StaffID == staffID);
-            if(item!=null)
+            if (item != null)
             {
                 result = staffList.Remove(item);
             }
@@ -49,18 +49,18 @@ namespace StaffLibrary
         }
         public void AddStaff(Staff staffObject)
         {
-            
+
             staffList.Add(staffObject);
         }
 
-        public Staff UpdateStaff(int staffID,string subjectOrArea)
+        public void UpdateStaff(int staffID, string subjectOrArea)
         {
             var item = staffList.FirstOrDefault(o => o.StaffID == staffID);
-            if(item.Designation== Enum.GetName(typeof(StaffType), 1))
+            if (item.Designation == (int)StaffType.Teaching)
             {
                 ((Teaching)item).Subject = subjectOrArea;
             }
-            else if (item.Designation == Enum.GetName(typeof(StaffType), 2))
+            else if (item.Designation == (int)StaffType.Administration)
             {
                 ((Administration)item).AdminArea = subjectOrArea;
             }
@@ -68,7 +68,12 @@ namespace StaffLibrary
             {
                 ((Supporting)item).SupportArea = subjectOrArea;
             }
-            return item;
+
+        }
+
+        public List<Staff> ViewAllStaff()
+        {
+            return this.staffList;
         }
     }
 }

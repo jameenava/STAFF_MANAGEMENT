@@ -9,8 +9,8 @@ namespace StaffLibrary
         void AddStaff(Staff staffObject);
         Staff SearchStaff(int iD);
         bool DeleteStaff(int staffID);
-        Staff UpdateStaff(int staffID,string subjectOrArea);
-        int IfExists(int sid);
+        void UpdateStaff(int staffID,string subjectOrArea);
+        List<Staff> ViewAllStaff();
 
     }
 }

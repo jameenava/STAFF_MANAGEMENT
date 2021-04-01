@@ -20,7 +20,12 @@ namespace StaffLibrary
         {
 
         }
-        public Supporting(int sid, Nullable<int> salary, string designation, string institutename, string supportArea) : base(sid, salary, designation, institutename)
+        public Supporting(int sid,int eid, Nullable<int> salary, int designation, string institutename, string supportArea) : base(sid,eid, salary, designation, institutename)
+        {
+            this.SupportArea = supportArea;
+
+        }
+        public Supporting(int sid, Nullable<int> salary, int designation, string institutename, string supportArea) : base(sid, salary, designation, institutename)
         {
             this.SupportArea = supportArea;
 

@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StaffLibrary", "Staff\Staff
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StaffManagement", "StaffManagement\StaffManagement.csproj", "{1BCEB923-543A-43DE-A3F5-887905840CC9}"
 EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "StaffManagementDB", "StaffManagementDB\StaffManagementDB.sqlproj", "{102FB582-F1F9-4B3B-AC5C-21DAF45B286E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,12 @@ Global
 		{1BCEB923-543A-43DE-A3F5-887905840CC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1BCEB923-543A-43DE-A3F5-887905840CC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1BCEB923-543A-43DE-A3F5-887905840CC9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{102FB582-F1F9-4B3B-AC5C-21DAF45B286E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{102FB582-F1F9-4B3B-AC5C-21DAF45B286E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{102FB582-F1F9-4B3B-AC5C-21DAF45B286E}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{102FB582-F1F9-4B3B-AC5C-21DAF45B286E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{102FB582-F1F9-4B3B-AC5C-21DAF45B286E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{102FB582-F1F9-4B3B-AC5C-21DAF45B286E}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

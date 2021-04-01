@@ -29,10 +29,14 @@ namespace StaffLibrary
         {
 
         }
-        public Teaching(int sid, Nullable<int> salary, string designation, string institutename, string subject) : base(sid, salary, designation, institutename)
+        public Teaching(int sid, int eid, int? salary, int designation, string institutename, string subject): base(sid, eid, salary, designation, institutename)
         {
             this.Subject = subject;
 
+        }
+        public Teaching(int sid, int? salary, int designation, string institutename, string subject): base(sid, salary, designation, institutename)
+        {
+            this.Subject = subject;
         }
     }
 }

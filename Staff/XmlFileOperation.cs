@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 
 namespace StaffLibrary
 {
-    public class XmlFileOp : Inmemory, ISerialize
+    public class XmlFileOperation : Inmemory, ISerialize
     {
         public static string path = Directory.GetParent(System.Reflection.Assembly.GetExecutingAssembly().Location).FullName;
         public static string fileName = Path.Combine(path, "test.xml");
