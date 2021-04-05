@@ -9,23 +9,17 @@ namespace StaffLibrary
     [XmlRoot("Supporting")]
     public class Supporting : Staff
     {
-        private string supportarea;
-
-        public string SupportArea
-        {
-            get { return supportarea; }
-            set { supportarea = value; }
-        }
+        public string SupportArea { get; set; }
         public Supporting()
         {
 
         }
-        public Supporting(int sid,int eid, Nullable<int> salary, int designation, string institutename, string supportArea) : base(sid,eid, salary, designation, institutename)
+        public Supporting(int sid,int eid, int? salary, StaffType designation, string institutename, string supportArea) : base(sid,eid, salary, designation, institutename)
         {
             this.SupportArea = supportArea;
 
         }
-        public Supporting(int sid, Nullable<int> salary, int designation, string institutename, string supportArea) : base(sid, salary, designation, institutename)
+        public Supporting(int sid, int? salary, StaffType designation, string institutename, string supportArea) : base(sid, salary, designation, institutename)
         {
             this.SupportArea = supportArea;
 

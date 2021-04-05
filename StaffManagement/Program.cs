@@ -30,10 +30,11 @@ namespace StaffManagement
         }
         static void DisplayStaffMenu()
         {
-            Console.WriteLine("Menu");
-            Console.WriteLine("1.Teaching");
-            Console.WriteLine("2.Admistrating");
-            Console.WriteLine("3.Supporting");
+            Console.WriteLine("Select Staff Type:");
+            foreach (int i in Enum.GetValues(typeof(StaffType)))
+            {
+                Console.WriteLine($" {(int)i}. {((StaffType)i)}");
+            }
         }
         static void DisplayStorageMenu()
         {
@@ -49,17 +50,44 @@ namespace StaffManagement
             }
 
         }
+        private static string GetSubjectFromUser()
+        {
+            string subject;
+            while (1 == 1)
+            {
+                var subjects = Teaching.SubjectList.Split(",");
+                Console.WriteLine("Select Subject");
+                for (int i = 0; i < subjects.Length; i++)
+                {
+                    Console.WriteLine($"{i + 1}. {subjects[i]}");
+                }
+                int.TryParse(Console.ReadLine(), out int subjectID);
+                if (subjectID == 0)
+                {
+                    Console.WriteLine("Entered Subject is invalid");
+                    continue;
+                }
+                else
+                {
+                    subject = subjects[subjectID - 1];
+                    break;
+                }
+            }
+
+            return subject;
+        }
+
         public static void DisplayStaff(Staff item)
         {
             Console.WriteLine("____________________________________________________________________");
             Console.Write("STAFF:" + "INSTITUTE:" + item.Institute + " |" + "ID:" + item.StaffID + "| " + "EMPLOYEE ID:" + item.EmployeeID +
             "| " + "SALARY:" + item.Salary + " |" + "STAFF TYPE:" + item.Designation);
-            if (item.Designation == (int)StaffType.Teaching)
+            if (item.Designation == StaffType.Teaching)
             {
                 Console.Write(" |" + "AREA/SUBJECT:" + ((Teaching)item).Subject);
                 Console.WriteLine(" ");
             }
-            else if (item.Designation == (int)StaffType.Administration)
+            else if (item.Designation == StaffType.Administration)
             {
                 Console.Write(" |" + "AREA/SUBJECT:" + ((Administration)item).AdminArea);
                 Console.WriteLine(" ");
@@ -78,8 +106,13 @@ namespace StaffManagement
             var builder = new ConfigurationBuilder()
                 .AddJsonFile(currentDirectory + $"\\appSettings.Development.json", true, true);
             var config = builder.Build();
-            ObjectHandle handle1 = Activator.CreateInstance("StaffLibrary", "StaffLibrary.DbProcedures");
-            IStaff istaffObj = (IStaff)handle1.Unwrap();
+            string managerClassTypeString = config["StorageType"];
+
+            //get the type of the class
+            Type managerClassType = Type.GetType("StaffLibrary." + managerClassTypeString + ",StaffLibrary", true);
+
+            //build an instance of the class
+            IStaff manager = Activator.CreateInstance(managerClassType) as IStaff;
             int yourChoice;
             var subjectForTeaching = config["SubjectList"];
             if (!string.IsNullOrEmpty(subjectForTeaching))
@@ -95,18 +128,18 @@ namespace StaffManagement
                 {
                     case 1:
 
-                        AddDetails(istaffObj);
+                        AddDetails(manager);
 
                         break;
                     case 2:
-                        List<Staff> staffs = istaffObj.ViewAllStaff();
-                        DisplayAllStaff(staffs);
+                        
+                        DisplayAllStaff(manager.GetAllStaff());
                         break;
 
                     case 3:
                         Console.WriteLine("Enter the Id to be searched");
                         int iD = int.Parse(Console.ReadLine());
-                        var item = istaffObj.SearchStaff(iD);
+                        var item = manager.GetStaffByID(iD);
                         if (item != null)
                         {
                             DisplayStaff(item);
@@ -122,14 +155,14 @@ namespace StaffManagement
                     case 4:
                         Console.WriteLine("Enter Staff Id which you want to delete:");
                         int staffID = int.Parse(Console.ReadLine());
-                        bool result = istaffObj.DeleteStaff(staffID);
+                        bool result = manager.DeleteStaff(staffID);
                         if (result == true)
                             Console.WriteLine("Employee deleted");
                         else
                             Console.WriteLine("Employee with ID:" + staffID + " not found");
                         break;
                     case 5:
-                        UpdateDetails(istaffObj);
+                        UpdateDetails(manager);
                         break;
                     case 6:
                         return;
@@ -156,12 +189,12 @@ namespace StaffManagement
                 try
                 {
                     sid = int.Parse(Console.ReadLine());
-                    var item = istaffObj.SearchStaff(sid);
+                    var item = istaffObj.GetStaffByID(sid);
                     if (item != null)
                     {
                         Console.WriteLine("Staff already exists with id:" + sid);
                         Console.WriteLine("Re enter ID");
-                        isStaff = true;
+                        isStaff = true; 
                     }
 
                 }
@@ -174,7 +207,6 @@ namespace StaffManagement
                     throw;
                 }
             } while (isStaff);
-            bool isSubject;
             bool isSalary;
             Nullable<int> salary = 0;
             do
@@ -200,23 +232,10 @@ namespace StaffManagement
                     }
                 }
             } while (isSalary);
-            string subject;
             if (staffChoice == 1)
             {
-                do
-                {
-                    isSubject = false;
-                    Console.WriteLine("Enter subject");
-                    subject = Console.ReadLine();
-                    if (Teaching.SubjectList.Split(",").Contains(subject) == false)
-                    {
-                        Console.WriteLine("Entered Subject is invalid");
-                        isSubject = true;
-                    }
-
-                } while (isSubject);
-                int designation = (int)StaffType.Teaching;
-                staffObject = new Teaching(sid, salary, designation, INSTITUTENAME, subject);
+                string subject = GetSubjectFromUser();
+                staffObject = new Teaching(sid, salary, StaffType.Teaching, INSTITUTENAME, subject);
             }
             else if (staffChoice == 2)
             {
@@ -226,8 +245,7 @@ namespace StaffManagement
                 {
                     adminArea = null;
                 }
-                int designation = (int)StaffType.Administration;
-                staffObject = new Administration(sid, salary, designation, INSTITUTENAME, adminArea);
+                staffObject = new Administration(sid, salary,StaffType.Administration, INSTITUTENAME, adminArea);
             }
 
             else if (staffChoice == 3)
@@ -238,8 +256,7 @@ namespace StaffManagement
                 {
                     supportArea = null;
                 }
-                int designation = (int)StaffType.Supporting;
-                staffObject = new Supporting(sid, salary, designation, INSTITUTENAME, supportArea);
+                staffObject = new Supporting(sid, salary, StaffType.Supporting, INSTITUTENAME, supportArea);
 
             }
             else
@@ -254,38 +271,30 @@ namespace StaffManagement
         {
             Console.WriteLine("Enter Employee Id which you want to update:");
             int staffID = int.Parse(Console.ReadLine());
-            var item = istaffObj.SearchStaff(staffID);
+            var item = istaffObj.GetStaffByID(staffID);
             string subjectOrArea;
-            int flag = 0;
             if (item != null)
             {
                 Console.WriteLine("Enter the details to update");
-                if (item.Designation == (int)StaffType.Teaching)
+                if (item.Designation == StaffType.Teaching)
                 {
                     Console.WriteLine("Old Subject is" + ((Teaching)item).Subject);
-                    do
-                    {
-                        flag = 0;
-                        Console.WriteLine("Enter new subject");
-                        subjectOrArea = Console.ReadLine();
-                        if (Teaching.SubjectList.Split(",").Contains(subjectOrArea) == false)
-                        {
-                            Console.WriteLine("Entered Subject is invalid");
-                            flag = 1;
-                        }
-
-                    } while (flag == 1);
+                    string subject = GetSubjectFromUser();
+                    ((Teaching)item).Subject = subject;
 
                 }
-                else if (item.Designation == (int)StaffType.Administration)
+                else if (item.Designation == StaffType.Administration)
                 {
                     Console.WriteLine("Old area is" + ((Administration)item).AdminArea);
                     Console.WriteLine("Enter Administration area");
                     subjectOrArea = Console.ReadLine();
+                    
                     if (String.IsNullOrWhiteSpace(subjectOrArea))
                     {
                         subjectOrArea = null;
                     }
+                    ((Administration)item).AdminArea = subjectOrArea;
+
                 }
                 else
                 {
@@ -296,9 +305,10 @@ namespace StaffManagement
                     {
                         subjectOrArea = null;
                     }
+                     ((Supporting)item).SupportArea = subjectOrArea;
                 }
 
-                istaffObj.UpdateStaff(staffID, subjectOrArea);
+                istaffObj.UpdateStaff(item);
                 Console.WriteLine("Staff Details are updated");
 
             }

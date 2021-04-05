@@ -13,10 +13,18 @@ namespace StaffLibrary
         public static string fileName = Path.Combine(path, "test.json");
         public void Deserialize()
         {
-            JsonConverter[] converters = { new StaffConverter() };
-            string json = File.ReadAllText(fileName);
-            staffList = JsonConvert.DeserializeObject<List<Staff>>(json, new JsonSerializerSettings() { Converters = converters });
+            try
+            {
+                JsonConverter[] converters = { new StaffConverter() };
+                string json = File.ReadAllText(fileName);
+                staffList = JsonConvert.DeserializeObject<List<Staff>>(json, new JsonSerializerSettings() { Converters = converters });
 
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         public void Serialize()

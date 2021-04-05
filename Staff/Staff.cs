@@ -10,48 +10,32 @@ namespace StaffLibrary
     [XmlInclude(typeof(Teaching)), XmlInclude(typeof(Administration)), XmlInclude(typeof(Supporting))]
     public abstract class Staff 
     {
-        private string instituteName;
-        public string Institute
-        {
-            get { return instituteName; }
-            set { instituteName = value; }
-        }
+        public string Institute { get; set; }
+        public int StaffID { get; set; }
+        public int? Salary { get; set; }
 
-        private int staffID;
-        public int StaffID
-        {
-            get { return staffID; }
-            set { staffID = value; }
-        }
+        public StaffType Designation { get; set; }
         public int EmployeeID;
-
-        private Nullable<int> salary;
-        public Nullable<int> Salary
-        {
-            get { return salary; }
-            set { salary = value; }
-        }
-        private int designation;
-        public int Designation
-        {
-            get { return designation; }
-            set { designation = value; }
-        }
         public Staff()
         {
 
         }
-        public Staff(int sid,int eid,Nullable<int>salary,int designation,string institutename)
+        public Staff(int sid, int eid, int? salary, StaffType designation, string institutename)
         {
-            this.staffID = sid;
+            if (string.IsNullOrEmpty(institutename))
+            {
+                throw new ArgumentException($"'{nameof(institutename)}' cannot be null or empty", nameof(institutename));
+            }
+
+            this.StaffID = sid;
             this.EmployeeID = eid;
-            this.Salary = salary;
+            this.Salary = salary ?? throw new ArgumentNullException(nameof(salary));
             this.Designation = designation;
             this.Institute = institutename;
         }
-        public Staff(int sid, Nullable<int> salary, int designation, string institutename)
+        public Staff(int sid, int? salary, StaffType designation, string institutename)
         {
-            this.staffID = sid;
+            this.StaffID = sid;
             this.Salary = salary;
             this.Designation = designation;
             this.Institute = institutename;

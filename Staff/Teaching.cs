@@ -11,30 +11,19 @@ namespace StaffLibrary
     public class Teaching : Staff
     {
 
-        private string subject;
+        public string Subject { get; set; }
 
-        public string Subject
-        {
-            get { return subject; }
-            set { subject = value; }
-        }
-        private static string subjectList;
-
-        public static string SubjectList
-        {
-            get { return subjectList; }
-            set { subjectList = value; }
-        }
+        public static string SubjectList { get; set; }
         public Teaching()
         {
 
         }
-        public Teaching(int sid, int eid, int? salary, int designation, string institutename, string subject): base(sid, eid, salary, designation, institutename)
+        public Teaching(int sid, int eid, int? salary, StaffType designation, string institutename, string subject): base(sid, eid, salary, designation, institutename)
         {
             this.Subject = subject;
 
         }
-        public Teaching(int sid, int? salary, int designation, string institutename, string subject): base(sid, salary, designation, institutename)
+        public Teaching(int sid, int? salary, StaffType designation, string institutename, string subject): base(sid, salary, designation, institutename)
         {
             this.Subject = subject;
         }

@@ -11,26 +11,14 @@ namespace StaffLibrary
     {
 
         const string INSTITUTENAME = " ABC SCHOOL";
-        public List<Staff> staffList = new List<Staff>();
+        internal List<Staff> staffList = new List<Staff>();
         [XmlElement("Staff")]
         public List<Staff> StaffList
         {
             get { return staffList; }
             set { staffList = value; }
         }
-
-        public int IfExists(int sid)
-        {
-            int flag = 0;
-            if ((StaffList.Exists(s => s.StaffID == sid) && StaffList.Count > 0))
-            {
-                flag = 1;
-            }
-            return flag;
-        }
-
-
-        public Staff SearchStaff(int iD)
+        public Staff GetStaffByID(int iD)
         {
             var item = staffList.FirstOrDefault(o => o.StaffID == iD);
             return item;
@@ -53,27 +41,16 @@ namespace StaffLibrary
             staffList.Add(staffObject);
         }
 
-        public void UpdateStaff(int staffID, string subjectOrArea)
+        public void UpdateStaff(Staff staff)
         {
-            var item = staffList.FirstOrDefault(o => o.StaffID == staffID);
-            if (item.Designation == (int)StaffType.Teaching)
-            {
-                ((Teaching)item).Subject = subjectOrArea;
-            }
-            else if (item.Designation == (int)StaffType.Administration)
-            {
-                ((Administration)item).AdminArea = subjectOrArea;
-            }
-            else
-            {
-                ((Supporting)item).SupportArea = subjectOrArea;
-            }
+            staffList.Remove(staff);
+            staffList.Add(staff);
 
         }
 
-        public List<Staff> ViewAllStaff()
+        public List<Staff> GetAllStaff()
         {
-            return this.staffList;
+            return staffList;
         }
     }
 }

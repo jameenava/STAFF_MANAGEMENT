@@ -7,10 +7,11 @@ namespace StaffLibrary
     public interface IStaff
     {
         void AddStaff(Staff staffObject);
-        Staff SearchStaff(int iD);
+        Staff GetStaffByID(int iD);
         bool DeleteStaff(int staffID);
-        void UpdateStaff(int staffID,string subjectOrArea);
-        List<Staff> ViewAllStaff();
+        // void UpdateStaff(int staffID,string subjectOrArea);
+        void UpdateStaff(Staff staff);
+        List<Staff> GetAllStaff();
 
     }
 }

@@ -48,9 +48,9 @@ namespace StaffLibrary
                 cmd.Parameters.AddWithValue("@instituteName", staffObject.Institute);
                 cmd.Parameters.AddWithValue("@salary", staffObject.Salary);
                 cmd.Parameters.AddWithValue("@staffType", staffObject.Designation);
-                if (staffObject.Designation == 1)
+                if (staffObject.Designation == StaffType.Teaching)
                     cmd.Parameters.AddWithValue("@subjectorArea", ((Teaching)staffObject).Subject);
-                else if (staffObject.Designation == 2)
+                else if (staffObject.Designation == StaffType.Administration)
                     cmd.Parameters.AddWithValue("@subjectorArea", ((Administration)staffObject).AdminArea);
                 else
                     cmd.Parameters.AddWithValue("@subjectorArea", ((Supporting)staffObject).SupportArea);
@@ -92,7 +92,7 @@ namespace StaffLibrary
             }
             return flag;
         }
-        public Staff SearchStaff(int iD)
+        public Staff GetStaffByID(int iD)
         {
             Staff staffObj = null;
             try
@@ -109,12 +109,12 @@ namespace StaffLibrary
                 {
                     int staffType = (int)(sdr["StaffType"]);
                     if (staffType == 1)
-                        staffObj = new Teaching((int)sdr["StaffID"], (int)sdr["EmployeeID"], (int)sdr["Salary"], (int)sdr["StaffType"], (string)sdr["InstituteName"], (string)sdr["Subject"]);
+                        staffObj = new Teaching((int)sdr["StaffID"], (int)sdr["EmployeeID"], (int)sdr["Salary"], (StaffType)sdr["StaffType"], (string)sdr["InstituteName"], (string)sdr["Subject"]);
                     else if (staffType == 2)
-                        staffObj = new Administration((int)sdr["StaffID"], (int)sdr["EmployeeID"], (int)sdr["Salary"], (int)sdr["StaffType"], (string)sdr["InstituteName"], (string)sdr["AdministrationArea"]);
+                        staffObj = new Administration((int)sdr["StaffID"], (int)sdr["EmployeeID"], (int)sdr["Salary"], (StaffType)sdr["StaffType"], (string)sdr["InstituteName"], (string)sdr["AdministrationArea"]);
 
                     else
-                        staffObj = new Supporting((int)sdr["StaffID"], (int)sdr["EmployeeID"], (int)sdr["Salary"], (int)sdr["StaffType"], (string)sdr["InstituteName"], (string)sdr["SupportingArea"]);
+                        staffObj = new Supporting((int)sdr["StaffID"], (int)sdr["EmployeeID"], (int)sdr["Salary"], (StaffType)sdr["StaffType"], (string)sdr["InstituteName"], (string)sdr["SupportingArea"]);
 
                 }
 
@@ -127,7 +127,7 @@ namespace StaffLibrary
             return staffObj;
         }
 
-        public void UpdateStaff(int staffID, string subjectOrArea)
+        public void UpdateStaff(Staff staffObject)
         {
             try
             {
@@ -136,8 +136,20 @@ namespace StaffLibrary
                 SqlCommand cmd = new SqlCommand("spUpdateStaff", connection);
                 connection.Open();
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@staffID", staffID);
-                cmd.Parameters.AddWithValue("@subjectOrArea", subjectOrArea);
+                cmd.Parameters.AddWithValue("@staffID", staffObject.StaffID);
+                if (staffObject.Designation==StaffType.Teaching)
+                {
+                    cmd.Parameters.AddWithValue("@subjectOrArea", ((Teaching)staffObject).Subject);
+                }
+                else if (staffObject.Designation == StaffType.Administration)
+                {
+                    cmd.Parameters.AddWithValue("@subjectOrArea", ((Administration)staffObject).AdminArea);
+                }
+                else
+                {
+                    cmd.Parameters.AddWithValue("@subjectOrArea", ((Supporting)staffObject).SupportArea);
+                }
+               
                 cmd.ExecuteNonQuery();
             }
             catch (Exception e)
@@ -147,7 +159,7 @@ namespace StaffLibrary
             }
         }
 
-        public List<Staff> ViewAllStaff()
+        public List<Staff> GetAllStaff()
         {
             Staff staffObj = null;
             List<Staff> staffList = new List<Staff>();
@@ -165,12 +177,12 @@ namespace StaffLibrary
                 {
                     int staffType = (int)(sdr["StaffType"]);
                     if (staffType == 1)
-                        staffObj = new Teaching((int)sdr["StaffID"], (int)sdr["EmployeeID"], (int)sdr["Salary"], (int)sdr["StaffType"], (string)sdr["InstituteName"], (string)sdr["Subject"]);
+                        staffObj = new Teaching((int)sdr["StaffID"], (int)sdr["EmployeeID"], (int)sdr["Salary"], (StaffType)sdr["StaffType"], (string)sdr["InstituteName"], (string)sdr["Subject"]);
                     else if (staffType == 2)
-                        staffObj = new Administration((int)sdr["StaffID"], (int)sdr["EmployeeID"], (int)sdr["Salary"], (int)sdr["StaffType"], (string)sdr["InstituteName"], (string)sdr["AdministrationArea"]);
+                        staffObj = new Administration((int)sdr["StaffID"], (int)sdr["EmployeeID"], (int)sdr["Salary"], (StaffType)sdr["StaffType"], (string)sdr["InstituteName"], (string)sdr["AdministrationArea"]);
 
                     else
-                        staffObj = new Supporting((int)sdr["StaffID"], (int)sdr["EmployeeID"], (int)sdr["Salary"], (int)sdr["StaffType"], (string)sdr["InstituteName"], (string)sdr["SupportingArea"]);
+                        staffObj = new Supporting((int)sdr["StaffID"], (int)sdr["EmployeeID"], (int)sdr["Salary"], (StaffType)sdr["StaffType"], (string)sdr["InstituteName"], (string)sdr["SupportingArea"]);
                     staffList.Add(staffObj);
 
                 }
