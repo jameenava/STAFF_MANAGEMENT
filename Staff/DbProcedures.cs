@@ -11,23 +11,13 @@ namespace StaffLibrary
     public class DbProcedures : IStaff
     {
         public string connectionString;
-        // public List<Staff> staffList = new List<Staff>();
-        //[XmlElement("Staff")]
-        //public List<Staff> StaffList
-        //{
-        //    get { return staffList; }
-        //    set { staffList = value; }
-        //}
-
-        public void DbProceduress()
+        public DbProcedures()
         {
-
             string currentDirectory = @"C:\Users\lenovo\source\repos\Staff\StaffManagement";
             var builder = new ConfigurationBuilder()
                 .AddJsonFile(currentDirectory + $"\\appSettings.Development.json", true, true);
             var config = builder.Build();
             this.connectionString = config["MyConn"];
-            Console.WriteLine(this.connectionString);
 
         }
         public void AddStaff(Staff staffObject)
@@ -35,8 +25,6 @@ namespace StaffLibrary
 
             try
             {
-
-                DbProceduress();
 
 
                 using SqlConnection connection = new SqlConnection(this.connectionString);
@@ -62,6 +50,39 @@ namespace StaffLibrary
                 Console.WriteLine("OOPs, something went wrong.\n" + e);
             }
         }
+        public void BulkInsert(List<Staff> staffList)
+
+        {
+            DataTable dt = new DataTable();
+            dt.Columns.Add(new DataColumn("EmployeeID", typeof(int)));
+            dt.Columns.Add(new DataColumn("InstituteName", typeof(string)));
+            dt.Columns.Add(new DataColumn("Salary", typeof(int)));
+            dt.Columns.Add(new DataColumn("StaffType", typeof(int)));
+            dt.Columns.Add(new DataColumn("SubjectorArea", typeof(string)));
+
+            foreach (Staff staffObject in staffList)
+            {
+                DataRow dr = dt.NewRow();
+                dr["EmployeeID"] = staffObject.StaffID;
+                dr["InstituteName"] = staffObject.Institute;
+                dr["Salary"] = staffObject.Salary;
+                dr["StaffType"] = staffObject.Designation;
+                if (staffObject.Designation == StaffType.Teaching)
+                    dr["SubjectorArea"] = ((Teaching)staffObject).Subject;
+                else if (staffObject.Designation == StaffType.Administration)
+                    dr["SubjectorArea"] = ((Administration)staffObject).AdminArea;
+                else
+                    dr["SubjectorArea"] = ((Supporting)staffObject).SupportArea;
+
+                dt.Rows.Add(dr);
+            }
+            using SqlConnection connection = new SqlConnection(this.connectionString);
+            SqlCommand cmd = new SqlCommand("proc_BulkInsert", connection);
+            connection.Open();
+            cmd.Parameters.AddWithValue("@UserDefineTable", dt);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.ExecuteNonQuery();
+        }
 
         public bool DeleteStaff(int staffID)
         {
@@ -69,21 +90,15 @@ namespace StaffLibrary
 
             try
             {
-                DbProceduress();
-
-
                 using SqlConnection connection = new SqlConnection(this.connectionString);
                 SqlCommand cmd = new SqlCommand("spDeleteStaff", connection);
 
                 connection.Open();
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@staffID", staffID);
-
                 int f = cmd.ExecuteNonQuery();
                 Console.WriteLine(f);
                 flag = true;
-
-
             }
             catch (Exception e)
             {
@@ -97,7 +112,6 @@ namespace StaffLibrary
             Staff staffObj = null;
             try
             {
-                DbProceduress();
                 using SqlConnection connection = new SqlConnection(this.connectionString);
                 SqlCommand cmd = new SqlCommand("spSearchStaff", connection);
 
@@ -131,13 +145,12 @@ namespace StaffLibrary
         {
             try
             {
-                DbProceduress();
                 using SqlConnection connection = new SqlConnection(this.connectionString);
                 SqlCommand cmd = new SqlCommand("spUpdateStaff", connection);
                 connection.Open();
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@staffID", staffObject.StaffID);
-                if (staffObject.Designation==StaffType.Teaching)
+                if (staffObject.Designation == StaffType.Teaching)
                 {
                     cmd.Parameters.AddWithValue("@subjectOrArea", ((Teaching)staffObject).Subject);
                 }
@@ -149,7 +162,7 @@ namespace StaffLibrary
                 {
                     cmd.Parameters.AddWithValue("@subjectOrArea", ((Supporting)staffObject).SupportArea);
                 }
-               
+
                 cmd.ExecuteNonQuery();
             }
             catch (Exception e)
@@ -165,7 +178,6 @@ namespace StaffLibrary
             List<Staff> staffList = new List<Staff>();
             try
             {
-                DbProceduress();
                 using SqlConnection connection = new SqlConnection(this.connectionString);
                 SqlCommand cmd = new SqlCommand("spViewAllStaff", connection);
 
@@ -192,7 +204,6 @@ namespace StaffLibrary
                 Console.WriteLine("OOPs, something went wrong.\n" + e);
 
             }
-
             return staffList;
         }
     }

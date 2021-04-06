@@ -26,7 +26,8 @@ namespace StaffManagement
             Console.WriteLine("3.Search a staff record");
             Console.WriteLine("4.Delete a staff record");
             Console.WriteLine("5.Update a staff record");
-            Console.WriteLine("6.Exit");
+            Console.WriteLine("6.Insert multiple staff records");
+            Console.WriteLine("7.Exit");
         }
         static void DisplayStaffMenu()
         {
@@ -128,11 +129,12 @@ namespace StaffManagement
                 {
                     case 1:
 
-                        AddDetails(manager);
 
+                        Staff StaffObj = AddDetails(manager);
+                        manager.AddStaff(StaffObj);
                         break;
                     case 2:
-                        
+
                         DisplayAllStaff(manager.GetAllStaff());
                         break;
 
@@ -165,6 +167,19 @@ namespace StaffManagement
                         UpdateDetails(manager);
                         break;
                     case 6:
+                        int numberOfStaff, i;
+                        List<Staff> staffList = new List<Staff>();
+                        Console.WriteLine("Enter the number of records do you want to insert");
+                        numberOfStaff = int.Parse(Console.ReadLine());
+                        for (i = 0; i < numberOfStaff; i++)
+                        {
+                            Staff staffObj = AddDetails(manager);
+                            staffList.Add(staffObj);
+
+                        }
+                        ((DbProcedures)manager).BulkInsert(staffList);
+                        break;
+                    case 7:
                         return;
                     default:
                         Console.WriteLine("invalid choice");
@@ -172,7 +187,7 @@ namespace StaffManagement
                 }
             } while (true);
         }
-        private static void AddDetails(IStaff istaffObj)
+        private static Staff AddDetails(IStaff istaffObj)
         {
             DisplayStaffMenu();
             Console.WriteLine("Enter the details of Staff");
@@ -194,7 +209,7 @@ namespace StaffManagement
                     {
                         Console.WriteLine("Staff already exists with id:" + sid);
                         Console.WriteLine("Re enter ID");
-                        isStaff = true; 
+                        isStaff = true;
                     }
 
                 }
@@ -245,7 +260,7 @@ namespace StaffManagement
                 {
                     adminArea = null;
                 }
-                staffObject = new Administration(sid, salary,StaffType.Administration, INSTITUTENAME, adminArea);
+                staffObject = new Administration(sid, salary, StaffType.Administration, INSTITUTENAME, adminArea);
             }
 
             else if (staffChoice == 3)
@@ -263,8 +278,7 @@ namespace StaffManagement
             {
                 Console.WriteLine("Invalid choice");
             }
-
-            istaffObj.AddStaff(staffObject);
+            return staffObject;
         }
 
         private static void UpdateDetails(IStaff istaffObj)
@@ -288,7 +302,7 @@ namespace StaffManagement
                     Console.WriteLine("Old area is" + ((Administration)item).AdminArea);
                     Console.WriteLine("Enter Administration area");
                     subjectOrArea = Console.ReadLine();
-                    
+
                     if (String.IsNullOrWhiteSpace(subjectOrArea))
                     {
                         subjectOrArea = null;
