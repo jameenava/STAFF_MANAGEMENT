@@ -16,18 +16,24 @@ namespace StaffLibrary
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
+            
             JObject jo = JObject.Load(reader);
-            if (jo["Designation"].Value<string>() == "Teaching")
-                return jo.ToObject<Teaching>(serializer);
+            if (jo["Designation"].Value<int>() == 1)
+                return serializer.Deserialize<Teaching>(reader);
+               // return jo.ToObject<Teaching>();
 
-            if (jo["Designation"].Value<string>() == "Administration")
-                return jo.ToObject<Administration>(serializer);
-            if (jo["Designation"].Value<string>() == "Supporting")
-                return jo.ToObject<Supporting>(serializer);
+            //return jo.<Teaching>(serializer);
+
+            if (jo["Designation"].Value<int>() == 2)
+                return serializer.Deserialize<Administration>(reader);
+                //return jo.ToObject<Administration>();
+            if (jo["Designation"].Value<int>() == 3)
+               return serializer.Deserialize<Supporting>(reader);
+                //return jo.ToObject<Supporting>();
 
             return null;
         }
-
+         
         public override bool CanWrite
         {
             get { return false; }

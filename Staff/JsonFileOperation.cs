@@ -31,11 +31,10 @@ namespace StaffLibrary
         {
 
             Newtonsoft.Json.JsonSerializer serializer = new Newtonsoft.Json.JsonSerializer();
-            using (StreamWriter sw = new StreamWriter(fileName))
-            using (Newtonsoft.Json.JsonWriter writer = new Newtonsoft.Json.JsonTextWriter(sw))
-            {
-                serializer.Serialize(writer, StaffList, typeof(Staff));
-            }
+
+            using StreamWriter sw = new StreamWriter(fileName);
+            using JsonWriter writer = new JsonTextWriter(sw);
+            serializer.Serialize(writer, StaffList, typeof(Staff));
 
         }
     }

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
 using System.Xml.Serialization;
 
 namespace StaffLibrary
@@ -13,7 +14,10 @@ namespace StaffLibrary
         public string connectionString;
         public DbProcedures()
         {
-            string currentDirectory = @"C:\Users\lenovo\source\repos\Staff\StaffManagement";
+            //string currentDirectory = @"C:\Users\lenovo\source\repos\Staff\StaffManagement";
+            //var builder = new ConfigurationBuilder()
+            //    .AddJsonFile(currentDirectory + $"\\appSettings.Development.json", true, true);
+            string currentDirectory = Directory.GetCurrentDirectory();
             var builder = new ConfigurationBuilder()
                 .AddJsonFile(currentDirectory + $"\\appSettings.Development.json", true, true);
             var config = builder.Build();
@@ -96,8 +100,7 @@ namespace StaffLibrary
                 connection.Open();
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@staffID", staffID);
-                int f = cmd.ExecuteNonQuery();
-                Console.WriteLine(f);
+                cmd.ExecuteNonQuery(); 
                 flag = true;
             }
             catch (Exception e)
@@ -184,6 +187,7 @@ namespace StaffLibrary
                 connection.Open();
                 cmd.CommandType = CommandType.StoredProcedure;
                 SqlDataReader sdr = cmd.ExecuteReader();
+
 
                 while (sdr.Read())
                 {

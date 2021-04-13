@@ -52,5 +52,15 @@ namespace StaffLibrary
         {
             return staffList;
         }
+
+        public void BulkInsert(List<Staff> staffList)
+        {
+            foreach (Staff item in staffList)
+            {
+                this.staffList.Add(item);
+            }
+
+            
+        }
     }
 }

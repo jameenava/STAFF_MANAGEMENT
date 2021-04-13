@@ -12,6 +12,7 @@ namespace StaffLibrary
         // void UpdateStaff(int staffID,string subjectOrArea);
         void UpdateStaff(Staff staff);
         List<Staff> GetAllStaff();
+        public void BulkInsert(List<Staff> staffList);
 
     }
 }

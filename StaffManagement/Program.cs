@@ -177,7 +177,7 @@ namespace StaffManagement
                             staffList.Add(staffObj);
 
                         }
-                        ((DbProcedures)manager).BulkInsert(staffList);
+                        manager.BulkInsert(staffList);
                         break;
                     case 7:
                         return;

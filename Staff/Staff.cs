@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Xml.Serialization;
 
 namespace StaffLibrary
 {
-    [XmlRoot("Staff")]
-    [XmlType("Staff")] 
-    [XmlInclude(typeof(Teaching)), XmlInclude(typeof(Administration)), XmlInclude(typeof(Supporting))]
+    //[XmlRoot("Staff")]
+    //[XmlType("Staff")] 
+    //[XmlInclude(typeof(Teaching)), XmlInclude(typeof(Administration)), XmlInclude(typeof(Supporting))]
+   // [JsonConverter(typeof(StaffConverter))]
     public abstract class Staff 
     {
         public string Institute { get; set; }
@@ -15,7 +18,7 @@ namespace StaffLibrary
         public int? Salary { get; set; }
 
         public StaffType Designation { get; set; }
-        public int EmployeeID;
+        public int EmployeeID { get; set; }
         public Staff()
         {
 

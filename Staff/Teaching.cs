@@ -3,11 +3,15 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using System.Xml.Serialization;
+using System.Runtime.Serialization;
+using Newtonsoft.Json;
 
 namespace StaffLibrary
 {
     [XmlType("Teaching")]
     [XmlRoot("Teaching")]
+    //[DataContract]
+    //[JsonConverter(typeof(StaffConverter))]
     public class Teaching : Staff
     {
 

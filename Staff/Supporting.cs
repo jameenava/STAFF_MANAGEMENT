@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Xml.Serialization;
 
@@ -7,6 +9,8 @@ namespace StaffLibrary
 {
     [XmlType("Supporting")]
     [XmlRoot("Supporting")]
+    //[DataContract]
+    //[JsonConverter(typeof(StaffConverter))]
     public class Supporting : Staff
     {
         public string SupportArea { get; set; }

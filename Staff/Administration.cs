@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Xml.Serialization;
 
@@ -7,6 +9,7 @@ namespace StaffLibrary
 {
     [XmlType("Administration")]
     [XmlRoot("Administration")]
+    //[JsonConverter(typeof(StaffConverter))]
     public class Administration : Staff
     {
         public string AdminArea { get; set; }
