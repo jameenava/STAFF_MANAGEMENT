@@ -26,7 +26,35 @@ namespace StaffManagementAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //services.AddCors();
+            //services.AddCors(options => options.AddDefaultPolicy(
+            //builder =>
+            //{
+            //    builder.
+            //    AllowAnyOrigin().
+            //    AllowAnyMethod().
+            //    AllowAnyHeader();
+            //}));
+            services.AddCors(c =>
+            {
+                c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin()
+                .AllowAnyHeader().AllowAnyMethod());
+            });
+            //services.AddCors(c =>
+            //{
+            //    c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin());
+            //});
+            //services.AddCors(options =>
+            //{
+            //    options.AddPolicy("AllowAll",
+            //        builder => builder.AllowAnyMethod()
+            //                          .AllowAnyHeader()
+            //                          .SetIsOriginAllowed(_ => true)
+            //                          //.AllowAnyOrigin().
+            //                          .AllowCredentials());
+            //});
             services.AddControllers();
+
             
         }
 
@@ -41,6 +69,12 @@ namespace StaffManagementAPI
             app.UseHttpsRedirection();
 
             app.UseRouting();
+            app.UseCors();
+            //app.UseCors(builder => builder
+            //.AllowAnyOrigin()
+            //.AllowAnyMethod()
+            //.AllowAnyHeader());
+            //app.UseCors(options => options.AllowAnyOrigin());
 
             app.UseAuthorization();
 
@@ -48,6 +82,7 @@ namespace StaffManagementAPI
             {
                 endpoints.MapControllers();
             });
+
         }
     }
 }

@@ -13,6 +13,6 @@ namespace StaffLibrary
         void UpdateStaff(Staff staff);
         List<Staff> GetAllStaff();
         public void BulkInsert(List<Staff> staffList);
-
+        List<Staff> GetEachStaffType(int choice);
     }
 }

@@ -62,5 +62,23 @@ namespace StaffLibrary
 
             
         }
+
+        public List<Staff> GetEachStaffType(int choice)
+        {
+            List<Staff> staffTypeList=new List<Staff>();
+            if (choice==1)
+            {
+                staffTypeList= staffList.Where(item => item.Designation == StaffType.Teaching).ToList();
+            }
+            else if(choice==2)
+            {
+                staffTypeList = staffList.Where(item => item.Designation == StaffType.Administration).ToList();
+            }
+            else
+            {
+                staffTypeList = staffList.Where(item => item.Designation == StaffType.Supporting).ToList();
+            }
+            return staffTypeList; 
+        }
     }
 }

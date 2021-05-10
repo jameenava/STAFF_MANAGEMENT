@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -15,6 +16,7 @@ namespace StaffManagementAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("AllowOrigin")]
     public class StaffController : ControllerBase
     {
         DbProcedures dbObject = new DbProcedures();
@@ -27,15 +29,30 @@ namespace StaffManagementAPI.Controllers
             {
                 WriteIndented = true
             };
-            foreach (object staffs in staffList)
-            {
-                var jsonString = System.Text.Json.JsonSerializer.Serialize(staffs, staffs.GetType(), options);
-                sb.Append(jsonString);
-            }
-            var staffDetails= sb.ToString();
-            return Ok(staffDetails);
+            return Ok(staffList);
         }
-        [HttpGet("{id}")]
+       
+        [HttpGet("{type}")]
+        public ActionResult GetStaffByItem(string type)
+        {
+            
+            int choice;
+            if (type == "teaching")
+                choice = 1;
+            else if (type == "administration")
+                choice = 2;
+            else
+                choice = 3;
+            List<dynamic> staffList = dbObject.GetEachStaffType(choice).Cast<dynamic>().ToList();
+
+            if (staffList == null)
+            {
+                return NotFound();
+            }
+            return Ok(staffList);
+
+        }
+        [HttpGet("{id:int}")]
         public ActionResult GetStaff(int id)
         {
             var staffObj = dbObject.GetStaffByID(id);
@@ -48,8 +65,9 @@ namespace StaffManagementAPI.Controllers
 
         }
         [HttpPost]
-        public ActionResult AddStaff([FromBody]dynamic json)
+        public ActionResult AddStaff(dynamic json)
         {
+
             var details = JObject.Parse(json.ToString());
             dynamic staffObj;
             if (details["Designation"] == 1)
@@ -66,7 +84,7 @@ namespace StaffManagementAPI.Controllers
             }
 
             dbObject.AddStaff(staffObj);
-            return Ok();
+            return StatusCode(201);
 
         }
         [HttpDelete("{id}")]
@@ -83,7 +101,7 @@ namespace StaffManagementAPI.Controllers
 
         }
         [HttpPut]
-        public ActionResult UpdateStaff([FromBody] dynamic json)
+        public ActionResult UpdateStaff( dynamic json)
         {
             var details = JObject.Parse(json.ToString());
             var iD = (int)details["StaffID"];

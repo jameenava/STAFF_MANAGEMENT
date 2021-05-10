@@ -17,7 +17,7 @@ namespace StaffLibrary
 
         public string Subject { get; set; }
 
-        public static string SubjectList { get; set; }
+        public static string SubjectList { get; set; } 
         public Teaching()
         {
 

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
+using System.Linq;
 using System.Xml.Serialization;
 
 namespace StaffLibrary
@@ -186,6 +187,7 @@ namespace StaffLibrary
 
                 connection.Open();
                 cmd.CommandType = CommandType.StoredProcedure;
+
                 SqlDataReader sdr = cmd.ExecuteReader();
 
 
@@ -209,6 +211,55 @@ namespace StaffLibrary
 
             }
             return staffList;
+        }
+
+        public List<Staff> GetEachStaffType(int choice)
+        {
+            Staff staffObj = null;
+            List<Staff> staffList = new List<Staff>();
+            List<Staff> staffTypeList = new List<Staff>();
+            try
+            {
+                using SqlConnection connection = new SqlConnection(this.connectionString);
+                SqlCommand cmd = new SqlCommand("spViewEachStaff", connection);
+                cmd.Parameters.AddWithValue("@staffChoice", choice);
+                connection.Open();
+                cmd.CommandType = CommandType.StoredProcedure;
+                SqlDataReader sdr = cmd.ExecuteReader();
+
+
+                while (sdr.Read())
+                {
+                    int staffType = (int)(sdr["StaffType"]);
+                    if (staffType == 1)
+                        staffObj = new Teaching((int)sdr["StaffID"], (int)sdr["EmployeeID"], (int)sdr["Salary"], (StaffType)sdr["StaffType"], (string)sdr["InstituteName"], (string)sdr["Subject"]);
+                    else if (staffType == 2)
+                        staffObj = new Administration((int)sdr["StaffID"], (int)sdr["EmployeeID"], (int)sdr["Salary"], (StaffType)sdr["StaffType"], (string)sdr["InstituteName"], (string)sdr["AdministrationArea"]);
+
+                    else
+                        staffObj = new Supporting((int)sdr["StaffID"], (int)sdr["EmployeeID"], (int)sdr["Salary"], (StaffType)sdr["StaffType"], (string)sdr["InstituteName"], (string)sdr["SupportingArea"]);
+                    staffList.Add(staffObj);
+
+                }
+                if (choice == 1)
+                {
+                    staffTypeList = staffList.Where(item => item.Designation == StaffType.Teaching).ToList();
+                }
+                else if (choice == 2)
+                {
+                    staffTypeList = staffList.Where(item => item.Designation == StaffType.Administration).ToList();
+                }
+                else
+                {
+                    staffTypeList = staffList.Where(item => item.Designation == StaffType.Supporting).ToList();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("OOPs, something went wrong.\n" + e);
+
+            }
+            return staffTypeList;
         }
     }
 }

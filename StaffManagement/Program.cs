@@ -37,12 +37,6 @@ namespace StaffManagement
                 Console.WriteLine($" {(int)i}. {((StaffType)i)}");
             }
         }
-        static void DisplayStorageMenu()
-        {
-            Console.WriteLine("Menu");
-            Console.WriteLine("1.Xml File");
-            Console.WriteLine("2.Json File");
-        }
         public static void DisplayAllStaff(List<Staff> staffs)
         {
             foreach (Staff staff in staffs)
@@ -134,8 +128,12 @@ namespace StaffManagement
                         manager.AddStaff(StaffObj);
                         break;
                     case 2:
-
-                        DisplayAllStaff(manager.GetAllStaff());
+                        DisplayStaffMenu();
+                        int choice;
+                        choice = int.Parse(Console.ReadLine());
+                        //DisplayStaffList(choice);
+                        DisplayAllStaff(manager.GetEachStaffType(choice));
+                        //DisplayAllStaff(manager.GetAllStaff());
                         break;
 
                     case 3:
@@ -187,6 +185,7 @@ namespace StaffManagement
                 }
             } while (true);
         }
+
         private static Staff AddDetails(IStaff istaffObj)
         {
             DisplayStaffMenu();
